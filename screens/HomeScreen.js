@@ -1,7 +1,6 @@
 import React from "react";
-import { View, Text, StyleSheet, LayoutAnimation } from "react-native";
+import { View, Text, StyleSheet, LayoutAnimation, TouchableOpacity } from "react-native";
 import Firebase from '../firebase';
-
 export default class HomeScreen extends React.Component {
     state = { email: "", displayName: "" };
 
@@ -28,6 +27,15 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    button: {
+        marginHorizontal: 30,
+        backgroundColor: "black",
+        borderRadius: 4,
+        height: 52,
+        width: 100,
         alignItems: "center",
         justifyContent: "center"
     }
