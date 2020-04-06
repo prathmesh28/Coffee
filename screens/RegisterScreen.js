@@ -1,9 +1,7 @@
 import React from "react";
-import { ScrollView, StyleSheet, Text, TextInput, View, TouchableOpacity, Image, StatusBar } from "react-native";
-import { FormLabel, FormInput, FormValidationMessage,Form } from 'react-native';
+import { StyleSheet, Text, TextInput, View, TouchableOpacity, Image, StatusBar } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Firebase from '../firebase';
-//export const firestore = Firebase.firestore()
 export default class RegisterScreen extends React.Component {
     static navigationOptions = {
         headerShown: false
@@ -22,156 +20,6 @@ export default class RegisterScreen extends React.Component {
             .catch(error => this.setState({ errorMessage: error.message }));
     };
     
-    // constructor() {
-    //     super();
-    //     this.dbRef = Firebase.firestore().collection('users');
-    //     this.state = {
-    //         name: "", email: "", phone: "", password: "", errorMessage: null 
-    //     };
-    //   }
-    //   inputValueUpdate = (val, prop) => {
-    //     const state = this.state;
-    //     state[prop] = val;
-    //     this.setState(state);
-    //   }
-    //   storeUser() {
-               
-    //       this.dbRef.add({
-    //         name: this.state.name,
-    //         email: this.state.email,
-    //         phone: this.state.phone,
-    //       }).then((res) => {
-    //         this.setState({
-    //           name: '',
-    //           email: '',
-    //           phone: '',
-    //         });
-    //         this.props.navigation.navigate('App')
-    //       })
-    //       .catch((err) => {
-    //         console.error("Error found: ", err);
-    //         this.setState({
-    //           isLoading: false,
-    //         });
-    //       });
-        
-    //   }
-    
-    
-            //.auth()
-            //.createUserWithEmailAndPassword(email, password)
-            //.then((user) => {
-                
-                   // userCredentials.user.updateProfile({name});
-                
-                    // const fbRootRefFS = Firebase.firestore();
-                    // const userID = user.uid;
-                    // console.log('user id ', userID);
-                    // console.log(name);
-                    // const userRef= fbRootRefFS.collection('users').doc(userID);
-                    // userRef.set({
-                    //     name,
-                    //     email,
-                    //     phone
-                    // });
-                
-            //})
-            //.catch(error => this.setState({ errorMessage: error.message }))
-
-    // updateInput = e => {
-    //     this.setState({
-    //       [e.target.name]: e.target.value,
-    //       [e.target.email]: e.target.value,
-    //       [e.target.phone]: e.target.value,
-    //       [e.target.password]: e.target.value
-    //     });
-    //   }
-    // addUser = e => {
-    //     e.preventDefault();
-    //     const db = firebase.firestore();
-    //     db.settings({
-    //       timestampsInSnapshots: true
-    //     });
-    //     const userRef = db.collection("users").add({
-    //       name: this.state.name,
-    //       email: this.state.email
-    //     });  
-    //     this.setState({
-    //       fullname: "",
-    //       email: ""
-    //     });
-    //   };
-    // handleGoBack = () => {
-
-    // }
-    // handleSetNameLocalState=(name)=>{
-        
-    //     this.setState({
-    //         name,
-    //     });
-    // }
-    // handleSetEmailLocalState=(email)=>{
-    //     this.setState({
-    //         email,
-    //     });
-
-    // }
-    // handleSetPhoneLocalState=(phone)=>{
-    //     this.setState({
-    //         phone,
-    //     });
-
-    // }
-    // handleSetPasswordLocalState=(password)=>{
-    //     this.setState({
-    //         password,
-    //     });
-
-    // }
-
-    //working
-    // componentWillMount(){
-    //     Firebase.database().ref('Users/002').set({
-    //         name: 'qwert',
-    //         phone: '12345678',
-    //         email: 'qwert@sdf.hjj'
-    //     }).then((data)=>{
-    //         //success callback
-    //         console.log('data ' , data)
-    //     }).catch((error)=>{
-    //         //error callback
-    //         console.log('error ' , error)
-    //     })
-    // }
-
-
-    // writeUserData(name, email,phone){
-    //     Firebase.database().ref('Users/').push({
-    //         name,
-    //         phone,
-    //         email
-    //     }).then((data)=>{
-    //         //success callback
-    //         console.log('data ' , data)
-    //     }).catch((error)=>{
-    //         //error callback
-    //         console.log('error ' , error)
-    //     })
-    // }
-
-    // handleText=e=>{
-    //     this.setState({
-    //         name:e.target.value
-    //     })
-    // }
-    // handleSubmit=e=>{
-    //     let uname=Firebase.database().ref('name').orderByKey().limitToLast(100);
-    //     firebase.database().ref('name').push(this.state.name);
-    //     this.setState({
-    //         name:""
-    //     })
-    // }
-
     render() {
         return (
             <View style={styles.container}>
@@ -245,7 +93,7 @@ export default class RegisterScreen extends React.Component {
 
                 <TouchableOpacity 
                     style={styles.button} 
-                    onPress={this.handleLogin}>
+                    onPress={this.handleSignUp}>
                     <Text style={{ color: "#FFF", fontWeight: "500" }}>Sign up</Text>
                 </TouchableOpacity>
 
