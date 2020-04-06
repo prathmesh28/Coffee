@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, TextInput, View, TouchableOpacity, Image, StatusBar } from "react-native";
+import { ScrollView, StyleSheet, Text, TextInput, View, TouchableOpacity, Image, StatusBar } from "react-native";
 import { FormLabel, FormInput, FormValidationMessage,Form } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 import Firebase from '../firebase';
@@ -8,44 +8,11 @@ export default class RegisterScreen extends React.Component {
     static navigationOptions = {
         headerShown: false
     };
-    constructor() {
-        super();
-        this.dbRef = Firebase.firestore().collection('users');
-        this.state = {
-            name: "", email: "", phone: "", password: "", errorMessage: null 
-        };
-      }
-      inputValueUpdate = (val, prop) => {
-        const state = this.state;
-        state[prop] = val;
-        this.setState(state);
-      }
-      storeUser() {
-               
-          this.dbRef.add({
-            name: this.state.name,
-            email: this.state.email,
-            phone: this.state.phone,
-          }).then((res) => {
-            this.setState({
-              name: '',
-              email: '',
-              phone: '',
-            });
-            this.props.navigation.navigate('App')
-          })
-          .catch((err) => {
-            console.error("Error found: ", err);
-            this.setState({
-              isLoading: false,
-            });
-          });
-        
-      }
-    
-    handleRegisterUser = () => {    
+    state = { name: "", email: "", phone: "", password: "", errorMessage: null };
+
+    handleSignUp = () => {
         Firebase
-        .auth()
+            .auth()
             .createUserWithEmailAndPassword(this.state.email, this.state.password)
             .then(userCredentials => {
                 return userCredentials.user.updateProfile({
@@ -53,7 +20,44 @@ export default class RegisterScreen extends React.Component {
                 });
             })
             .catch(error => this.setState({ errorMessage: error.message }));
-        };
+    };
+    
+    // constructor() {
+    //     super();
+    //     this.dbRef = Firebase.firestore().collection('users');
+    //     this.state = {
+    //         name: "", email: "", phone: "", password: "", errorMessage: null 
+    //     };
+    //   }
+    //   inputValueUpdate = (val, prop) => {
+    //     const state = this.state;
+    //     state[prop] = val;
+    //     this.setState(state);
+    //   }
+    //   storeUser() {
+               
+    //       this.dbRef.add({
+    //         name: this.state.name,
+    //         email: this.state.email,
+    //         phone: this.state.phone,
+    //       }).then((res) => {
+    //         this.setState({
+    //           name: '',
+    //           email: '',
+    //           phone: '',
+    //         });
+    //         this.props.navigation.navigate('App')
+    //       })
+    //       .catch((err) => {
+    //         console.error("Error found: ", err);
+    //         this.setState({
+    //           isLoading: false,
+    //         });
+    //       });
+        
+    //   }
+    
+    
             //.auth()
             //.createUserWithEmailAndPassword(email, password)
             //.then((user) => {
@@ -170,7 +174,7 @@ export default class RegisterScreen extends React.Component {
 
     render() {
         return (
-            <ScrollView style={styles.container}>
+            <View style={styles.container}>
                 <StatusBar barStyle="light-content"></StatusBar>
                 
                 <Image
@@ -201,7 +205,7 @@ export default class RegisterScreen extends React.Component {
                      <Text style={styles.inputTitle}>Full Name</Text>
                         <TextInput
                             style={styles.input}
-                            onChangeText={(val) => this.inputValueUpdate(val, 'name')}
+                            onChangeText={name => this.setState({ name })}
                             value={this.state.name}
                         ></TextInput>
                     </View>
@@ -211,7 +215,7 @@ export default class RegisterScreen extends React.Component {
                         <TextInput
                             style={styles.input}
                             autoCapitalize="none"
-                            onChangeText={(val) => this.inputValueUpdate(val, 'email')}
+                            onChangeText={email => this.setState({ email })}
                             value={this.state.email}
                         ></TextInput>
                     </View>
@@ -221,7 +225,7 @@ export default class RegisterScreen extends React.Component {
                         <TextInput
                             style={styles.input}
                             autoCapitalize="none"
-                            onChangeText={(val) => this.inputValueUpdate(val, 'phone')}
+                            onChangeText={phone => this.setState({ phone })}
                             value={this.state.phone}
                         ></TextInput>
                     </View>
@@ -232,7 +236,7 @@ export default class RegisterScreen extends React.Component {
                             style={styles.input}
                             secureTextEntry
                             autoCapitalize="none"
-                            onChangeText={(val) => this.inputValueUpdate(val, 'password')}
+                            onChangeText={password => this.setState({ password })}
                             value={this.state.password}
                         ></TextInput>
                     </View>
@@ -241,7 +245,7 @@ export default class RegisterScreen extends React.Component {
 
                 <TouchableOpacity 
                     style={styles.button} 
-                    onPress={() => this.storeUser()}>
+                    onPress={this.handleLogin}>
                     <Text style={{ color: "#FFF", fontWeight: "500" }}>Sign up</Text>
                 </TouchableOpacity>
 
@@ -253,7 +257,7 @@ export default class RegisterScreen extends React.Component {
                         Already have an account? <Text style={{ fontWeight: "600", color: "#005ce6" }}>Sign in</Text>
                     </Text>
                 </TouchableOpacity>
-            </ScrollView>
+            </View>
         );   
     }
 }
