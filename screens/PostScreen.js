@@ -14,5 +14,4 @@ export default class PostScreen extends React.Component {
       </View>
     );
   }
-
 }

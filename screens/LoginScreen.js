@@ -1,30 +1,35 @@
 import React from 'react';
 import {
-  View,
-  Text,
   StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  Image,
+  ImageBackground,
+  Dimensions,
   StatusBar,
-  LayoutAnimation,
-  Button,
+  TouchableWithoutFeedback,
+  Keyboard,
+  AsyncStorage
 } from 'react-native';
+import { Block, Checkbox, Text, Button as GaButton, theme } from 'galio-framework';
 
-
+import { Button, Icon, Input } from '../components';
+import { Images, nowTheme } from '../constants';
 import Firebase from '../firebase';
+const { width, height } = Dimensions.get('screen');
+
+const DismissKeyboard = ({ children }) => (
+  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
+);
 
 export default class LoginScreen extends React.Component {
-
   static navigationOptions = {
     headerShown: false
   };
-
   state = {
     email: '',
     password: '',
     errorMessage: null,
   };
+
+  componentDidMount = () => AsyncStorage.getItem('email').then((value) => this.setState({ 'email': value }))
 
   handleLogin = () => {
     const { email, password } = this.state;
@@ -33,122 +38,254 @@ export default class LoginScreen extends React.Component {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .catch(error => this.setState({ errorMessage: error.message }));
+    AsyncStorage.setItem('email', email);
   };
-
   render() {
-    LayoutAnimation.easeInEaseOut();
-
     return (
-      <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
-        
-        <Image
-          source={require('../assets/footig.png')}
-          style={{
-            position: 'absolute',
-            alignSelf: 'center',
-            bottom: 0,
-            height: 150,
-            width: 400,
-          }}
-        />
+      <DismissKeyboard>
+        <Block flex middle>
+        <StatusBar hidden />
+          <ImageBackground
+           // source={Images.RegisterBackground}
+            style={styles.imageBackgroundContainer}
+            imageStyle={styles.imageBackground}
+          >
+            <Block flex middle>
+              <Block style={styles.registerContainer}>
+                <Block flex space="evenly">
+                  <Block flex={0.4} middle style={styles.socialConnect}>
+                    <Block flex={0.5} middle>
+                      <Text
+                        style={{
+                          //fontFamily: 'montserrat-regular',
+                          textAlign: 'center'
+                        }}
+                        color="#333"
+                        size={24}
+                      >
+                        Login
+                      </Text>
+                    </Block>
 
-        <Image
-          source={require('../assets/logoig.png')}
-          style={{
-            marginTop: -20,
-            alignSelf: 'center',
-            width: 150,
-            height: 150,
-          }}
-        />
-        <Text style={styles.greeting}>{`\n\nWelcome!`}</Text>
+                    <Block flex={0.5} row middle space="between" style={{ marginBottom: 18 }}>
+                      <GaButton
+                        round
+                        onlyIcon
+                        shadowless
+                        icon="twitter"
+                        iconFamily="Font-Awesome"
+                        iconColor={theme.COLORS.WHITE}
+                        iconSize={theme.SIZES.BASE * 1.625}
+                        color={nowTheme.COLORS.TWITTER}
+                        style={[styles.social, styles.shadow]}
+                      />
 
-        <View style={styles.errorMessage}>
-          {this.state.errorMessage && (
-            <Text style={styles.error}>{this.state.errorMessage}</Text>
-          )}
-        </View>
-
-        <View style={styles.form}>
-          <View>
-            <Text style={styles.inputTitle}>Email Address</Text>
-            <TextInput
-              style={styles.input}
-              autoCapitalize="none"
-              onChangeText={email => this.setState({ email })}
-              value={this.state.email}
-            />
-          </View>
-
-          <View style={{ marginTop: 28 }}>
-            <Text style={styles.inputTitle}>Password</Text>
-            <TextInput
-              style={styles.input}
-              secureTextEntry
-              autoCapitalize="none"
-              onChangeText={password => this.setState({ password })}
-              value={this.state.password}
-            />
-          </View>
-        </View>
-
-        <TouchableOpacity style={styles.button} onPress={this.handleLogin}>
-          <Text style={{ color: '#FFF', fontWeight: '500' }}>Sign in</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{ alignSelf: 'center', marginTop: 28 }}
-          onPress={() => this.props.navigation.navigate('Register')}>
-          <Text style={{ color: '#414959', fontSize: 17 }}>
-            New here?{' '}
-            <Text style={{ fontWeight: '700', color: '#00b33c' }}>Register</Text>
-          </Text>
-        </TouchableOpacity>
-      </View>
+                      <GaButton
+                        round
+                        onlyIcon
+                        shadowless
+                        icon="google"
+                        iconFamily="Font-Awesome"
+                        iconColor={theme.COLORS.WHITE}
+                        iconSize={theme.SIZES.BASE * 1.625}
+                        color={nowTheme.COLORS.GOOGLE}
+                        style={[styles.social, styles.shadow]}
+                      />
+                      <GaButton
+                        round
+                        onlyIcon
+                        shadowless
+                        icon="facebook"
+                        iconFamily="Font-Awesome"
+                        iconColor={theme.COLORS.WHITE}
+                        iconSize={theme.SIZES.BASE * 1.625}
+                        color={nowTheme.COLORS.FACEBOOK}
+                        style={[styles.social, styles.shadow]}
+                      />
+                    </Block>
+                  </Block>
+                  <Block flex={0.1} middle>
+                    <Text
+                      style={{
+                        //fontFamily: 'montserrat-regular',
+                        textAlign: 'center'
+                      }}
+                      muted
+                      size={16}
+                    >
+                      or be classical
+                    </Text>
+                  </Block>
+                  <Block flex={0.07} row style={styles.errorMessage}>
+                  {this.state.errorMessage && (<Text style={styles.error}>{this.state.errorMessage}</Text>)}
+                </Block>
+                  <Block flex={1} middle space="between">
+                    <Block center flex={0.9}>
+                      <Block flex space="between">
+                        <Block>
+                          
+                          <Block width={width * 0.8}>
+                            <Input
+                              placeholder="Email"
+                              onChangeText={email => this.setState({ email })}
+                              value={this.state.email}
+                              style={styles.inputs}
+                              iconContent={
+                                <Icon
+                                  size={16}
+                                  color="#ADB5BD"
+                                  name="email-852x"
+                                  family="NowExtra"
+                                  style={styles.inputIcons}
+                                />
+                              }
+                            />
+                          </Block>
+                          <Block width={width * 0.8}>
+                            <Input
+                              secureTextEntry
+                              autoCapitalize="none"
+                              placeholder="Password"
+                              onChangeText={password => this.setState({ password })}
+                              value={this.state.password}
+                              style={styles.inputs}
+                              iconContent={
+                                <Icon
+                                  size={16}
+                                  color="#ADB5BD"
+                                  name="key-252x"
+                                  family="NowExtra"
+                                  style={styles.inputIcons}
+                                />
+                              }
+                            />
+                          </Block>
+                          <Block
+                            style={{ marginVertical: theme.SIZES.BASE, marginLeft: 15}}
+                            row
+                            width={width * 0.75}
+                          >
+                            <Checkbox
+                              onChange={ () => this.setState({check: !this.state.check}) }
+                              checkboxStyle={{
+                                borderWidth: 1,
+                                borderRadius: 2,
+                                borderColor: '#E3E3E3'
+                              }}
+                              color={nowTheme.COLORS.PRIMARY}
+                              labelStyle={{
+                                color: nowTheme.COLORS.HEADER,
+                                //fontFamily: 'montserrat-regular'
+                              }}
+                              label="I agree to the terms and conditions."
+                            />
+                          </Block>
+                        </Block>
+                        <Block center>
+                          <Button color="primary" round style={styles.createButton}>
+                            <Text
+                              //style={{ fontFamily: 'montserrat-bold' }}
+                              size={14}
+                              onPress={this.handleSignUp}
+                              disabled={this.state.check}
+                              color={nowTheme.COLORS.WHITE}
+                            >
+                              Log In
+                            </Text>
+                          </Button>
+                        </Block>
+                      </Block>
+                    </Block>
+                  </Block>
+                </Block>
+              </Block>
+            </Block>
+          </ImageBackground>
+        </Block>
+      </DismissKeyboard>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    
-    marginTop:100,
-    flex: 1,
+  imageBackgroundContainer: {
+    backgroundColor: theme.COLORS.BLACK,
+  
+    width: width,
+    height: height,
+    padding: 0,
+    zIndex: 1
   },
-  greeting: {
-    // marginTop: -32,
-    fontSize: 18,
-    fontWeight: '400',
-    textAlign: 'center',
+  imageBackground: {
+    width: width,
+    height: height
   },
-  form: {
-    
-    marginBottom: 48,
-    marginHorizontal: 30,
-  },
-  inputTitle: {
-    color: '#8A8F9E',
-    fontSize: 10,
-    textTransform: 'uppercase',
-  },
-  input: {
-    borderBottomColor: '#8A8F9E',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    height: 40,
-    fontSize: 15,
-    color: '#161F3D',
-  },
-  button: {
-    marginHorizontal: 30,
-    backgroundColor: '#005ce6',
+  registerContainer: {
+    marginTop: 55,
+    width: width * 0.9,
+    height: height < 812 ? height * 0.8 : height * 0.7,
+    backgroundColor: nowTheme.COLORS.WHITE,
     borderRadius: 4,
-    height: 52,
-    alignItems: 'center',
+    shadowColor: nowTheme.COLORS.BLACK,
+    shadowOffset: {
+      width: 0,
+      height: 4
+    },
+    shadowRadius: 8,
+    shadowOpacity: 0.1,
+    elevation: 1,
+    overflow: 'hidden'
+  },
+  socialConnect: {
+    backgroundColor: nowTheme.COLORS.WHITE
+    // borderBottomWidth: StyleSheet.hairlineWidth,
+    // borderColor: "rgba(136, 152, 170, 0.3)"
+  },
+  socialButtons: {
+    width: 120,
+    height: 40,
+    backgroundColor: '#fff',
+    shadowColor: nowTheme.COLORS.BLACK,
+    shadowOffset: {
+      width: 0,
+      height: 4
+    },
+    shadowRadius: 8,
+    shadowOpacity: 0.1,
+    elevation: 1
+  },
+  socialTextButtons: {
+    color: nowTheme.COLORS.PRIMARY,
+    fontWeight: '800',
+    fontSize: 14
+  },
+  inputIcons: {
+    marginRight: 12,
+    color: nowTheme.COLORS.ICON_INPUT
+  },
+  inputs: {
+    borderWidth: 1,
+    borderColor: '#E3E3E3',
+    borderRadius: 21.5
+  },
+  passwordCheck: {
+    paddingLeft: 2,
+    paddingTop: 6,
+    paddingBottom: 15
+  },
+  createButton: {
+    width: width * 0.5,
+    marginTop: 25,
+    marginBottom: 40
+  },
+  social: {
+    width: theme.SIZES.BASE * 3.5,
+    height: theme.SIZES.BASE * 3.5,
+    borderRadius: theme.SIZES.BASE * 1.75,
     justifyContent: 'center',
+    marginHorizontal: 10
   },
   errorMessage: {
-    height: 72,
     alignItems: 'center',
     justifyContent: 'center',
     marginHorizontal: 30,
@@ -158,5 +295,5 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
     textAlign: 'center',
-  },
+  }
 });

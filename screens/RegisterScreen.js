@@ -1,181 +1,332 @@
-import React from "react";
-import { StyleSheet, Text, TextInput, View, TouchableOpacity, Image, StatusBar } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import React from 'react';
+import {
+  StyleSheet,
+  ImageBackground,
+  Dimensions,
+  StatusBar,
+  TouchableWithoutFeedback,
+  Keyboard,
+  AsyncStorage
+} from 'react-native';
+import { Block, Checkbox, Text, Button as GaButton, theme } from 'galio-framework';
+
+import { Button, Icon, Input } from '../components';
+import { Images, nowTheme } from '../constants';
 import Firebase from '../firebase';
+const { width, height } = Dimensions.get('screen');
+
+const DismissKeyboard = ({ children }) => (
+  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
+);
+
 export default class RegisterScreen extends React.Component {
-    static navigationOptions = {
-        headerShown: false
-    };
-    state = { name: "", email: "", phone: "", password: "", errorMessage: null };
+  static navigationOptions = {
+    headerShown: false
+  };
+  
+  state = { fname: "", lname: "", email: "", password: "", check: false, errorMessage: null }
+ 
 
-    handleSignUp = () => {
-        Firebase
-            .auth()
-            .createUserWithEmailAndPassword(this.state.email, this.state.password)
-            .then(userCredentials => {
-                return userCredentials.user.updateProfile({
-                    displayName: this.state.name
-                });
-            })
-            .catch(error => this.setState({ errorMessage: error.message }));
-    };
-    
-    render() {
-        return (
-            <View style={styles.container}>
-                <StatusBar barStyle="light-content"></StatusBar>
-                
-                <Image
-                    source={require("../assets/grass.png")}
-                    style={{ position: "absolute", bottom: -10}}
-                ></Image>
-                <TouchableOpacity style={styles.back} onPress={() => this.props.navigation.goBack()}>
-                    <Ionicons name="ios-arrow-round-back" size={32} color="#FFF"></Ionicons>
-                </TouchableOpacity>
-                <View style={{ position: "absolute", top: 64, alignItems: "center", width: "100%" }}>
-                    <Text style={styles.greeting}>{`Hello!\nSign up to get started.`}</Text>
-                    <TouchableOpacity style={styles.avatar}>
-                    
-                        <Ionicons
-                            name="md-person"
-                            size={40}
-                        ></Ionicons>
-                    </TouchableOpacity>
-                </View>
-
-                <View style={styles.errorMessage}>
-                    {this.state.errorMessage && <Text style={styles.error}>{this.state.errorMessage}</Text>}
-                </View>
-
-                <View style={styles.form}>
-                
-                    <View>
-                     <Text style={styles.inputTitle}>Full Name</Text>
-                        <TextInput
-                            style={styles.input}
-                            onChangeText={name => this.setState({ name })}
-                            value={this.state.name}
-                        ></TextInput>
-                    </View>
-
-                    <View style={{ marginTop: 32 }}>
-                        <Text style={styles.inputTitle}>Email Address</Text>
-                        <TextInput
-                            style={styles.input}
-                            autoCapitalize="none"
-                            onChangeText={email => this.setState({ email })}
-                            value={this.state.email}
-                        ></TextInput>
-                    </View>
-
-                    <View style={{ marginTop: 32 }}>
-                        <Text style={styles.inputTitle}>Mobile No.</Text>
-                        <TextInput
-                            style={styles.input}
-                            autoCapitalize="none"
-                            onChangeText={phone => this.setState({ phone })}
-                            value={this.state.phone}
-                        ></TextInput>
-                    </View>
-
-                    <View style={{ marginTop: 32 }}>
-                        <Text style={styles.inputTitle}>Password</Text>
-                        <TextInput
-                            style={styles.input}
-                            secureTextEntry
-                            autoCapitalize="none"
-                            onChangeText={password => this.setState({ password })}
-                            value={this.state.password}
-                        ></TextInput>
-                    </View>
-                    
-                </View>
-
-                <TouchableOpacity 
-                    style={styles.button} 
-                    onPress={this.handleSignUp}>
-                    <Text style={{ color: "#FFF", fontWeight: "500" }}>Sign up</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    style={{ alignSelf: "center", marginTop: 32 }}
-                    onPress={() => this.props.navigation.navigate("Login")}
-                >
-                    <Text style={{ color: "#414959", fontSize: 17 }}>
-                        Already have an account? <Text style={{ fontWeight: "600", color: "#005ce6" }}>Sign in</Text>
-                    </Text>
-                </TouchableOpacity>
-            </View>
-        );   
-    }
-}
-const styles = StyleSheet.create({
-    container: {
-        flex: 1
-    },
-    greeting: {
-        marginTop: 32,
-        fontSize: 18,
-        fontWeight: "500",
-        textAlign: "center",
-        color: "#000"
-    },
-    form: {
+  handleSignUp = () => {
       
-        marginTop:230,
-        marginBottom: 48,
-        marginHorizontal: 30
+      Firebase
+          .auth()
+          .createUserWithEmailAndPassword(this.state.email, this.state.password)
+          .then(userCredentials => {
+              return userCredentials.user.updateProfile({
+                  displayName: this.state.name
+              });
+          })
+          .catch(error => this.setState({ errorMessage: error.message }));
+          AsyncStorage.setItem('email', this.state.email);
+  };
+  render() {
+    return (
+      <DismissKeyboard>
+        <Block flex middle>
+        <StatusBar hidden />
+          <ImageBackground
+            //source={Images.RegisterBackground}
+            style={styles.imageBackgroundContainer}
+            imageStyle={styles.imageBackground}
+          >
+            <Block flex middle>
+              <Block style={styles.registerContainer}>
+                <Block flex space="evenly">
+                  <Block flex={0.4} middle style={styles.socialConnect}>
+                    <Block flex={0.5} middle>
+                      <Text
+                        style={{
+                          //fontFamily: 'montserrat-regular',
+                          textAlign: 'center'
+                        }}
+                        color="#333"
+                        size={24}
+                      >
+                        Register
+                      </Text>
+                    </Block>
+
+                    <Block flex={0.5} row middle space="between" style={{ marginBottom: 18 }}>
+                      <GaButton
+                        round
+                        onlyIcon
+                        shadowless
+                        icon="twitter"
+                        iconFamily="Font-Awesome"
+                        iconColor={theme.COLORS.WHITE}
+                        iconSize={theme.SIZES.BASE * 1.625}
+                        color={nowTheme.COLORS.TWITTER}
+                        style={[styles.social, styles.shadow]}
+                      />
+
+                      <GaButton
+                        round
+                        onlyIcon
+                        shadowless
+                        icon="google"
+                        iconFamily="Font-Awesome"
+                        iconColor={theme.COLORS.WHITE}
+                        iconSize={theme.SIZES.BASE * 1.625}
+                        color={nowTheme.COLORS.GOOGLE}
+                        style={[styles.social, styles.shadow]}
+                      />
+                      <GaButton
+                        round
+                        onlyIcon
+                        shadowless
+                        icon="facebook"
+                        iconFamily="Font-Awesome"
+                        iconColor={theme.COLORS.WHITE}
+                        iconSize={theme.SIZES.BASE * 1.625}
+                        color={nowTheme.COLORS.FACEBOOK}
+                        style={[styles.social, styles.shadow]}
+                      />
+                    </Block>
+                  </Block>
+                  <Block flex={0.1} middle>
+                    <Text
+                      style={{
+                        //fontFamily: 'montserrat-regular',
+                        textAlign: 'center'
+                      }}
+                      muted
+                      size={16}
+                    >
+                      or be classical
+                    </Text>
+                  </Block>
+                  <Block flex={0.07} row style={styles.errorMessage}>
+                  {this.state.errorMessage && (<Text style={styles.error}>{this.state.errorMessage}</Text>)}
+                </Block>
+                  <Block flex={1} middle space="between">
+                    <Block center flex={0.9}>
+                      <Block flex space="between">
+                        <Block>
+                          <Block width={width * 0.8} style={{ marginBottom: 5 }}>
+                            <Input
+                              placeholder="First Name"
+                              onChangeText={fname => this.setState({ fname })}
+                              value={this.state.fname}
+                              style={styles.inputs}
+                              iconContent={
+                                <Icon
+                                  size={16}
+                                  color="#ADB5BD"
+                                  name="profile-circle"
+                                  family="NowExtra"
+                                  style={styles.inputIcons}
+                                />
+                              }
+                            />
+                          </Block>
+                          <Block width={width * 0.8} style={{ marginBottom: 5 }}>
+                            <Input
+                              placeholder="Last Name"
+                              onChangeText={lname => this.setState({ lname })}
+                              value={this.state.lname}
+                              style={styles.inputs}
+                              iconContent={
+                                <Icon
+                                  size={16}
+                                  color="#ADB5BD"
+                                  name="caps-small2x"
+                                  family="NowExtra"
+                                  style={styles.inputIcons}
+                                />
+                              }
+                            />
+                          </Block>
+                          <Block width={width * 0.8}>
+                            <Input
+                              placeholder="Email"
+                              onChangeText={email => this.setState({ email })}
+                              value={this.state.email}
+                              style={styles.inputs}
+                              iconContent={
+                                <Icon
+                                  size={16}
+                                  color="#ADB5BD"
+                                  name="email-852x"
+                                  family="NowExtra"
+                                  style={styles.inputIcons}
+                                />
+                              }
+                            />
+                          </Block>
+                          <Block width={width * 0.8}>
+                            <Input
+                              secureTextEntry
+                              autoCapitalize="none"
+                              placeholder="Password"
+                              onChangeText={password => this.setState({ password })}
+                              value={this.state.password}
+                              style={styles.inputs}
+                              iconContent={
+                                <Icon
+                                  size={16}
+                                  color="#ADB5BD"
+                                  name="key-252x"
+                                  family="NowExtra"
+                                  style={styles.inputIcons}
+                                />
+                              }
+                            />
+                          </Block>
+                          <Block
+                            style={{ marginVertical: theme.SIZES.BASE, marginLeft: 15}}
+                            row
+                            width={width * 0.75}
+                          >
+                            <Checkbox
+                              onChange={ () => this.setState({check: !this.state.check}) }
+                              checkboxStyle={{
+                                borderWidth: 1,
+                                borderRadius: 2,
+                                borderColor: '#E3E3E3'
+                              }}
+                              color={nowTheme.COLORS.PRIMARY}
+                              labelStyle={{
+                                color: nowTheme.COLORS.HEADER,
+                                //fontFamily: 'montserrat-regular'
+                              }}
+                              label="I agree to the terms and conditions."
+                            />
+                          </Block>
+                        </Block>
+                        <Block center>
+                          <Button color="primary" round style={styles.createButton}>
+                            <Text
+                              //style={{ fontFamily: 'montserrat-bold' }}
+                              size={14}
+                              onPress={this.handleSignUp}
+                              disabled={this.state.check}
+                              color={nowTheme.COLORS.WHITE}
+                            >
+                              Get Started
+                            </Text>
+                          </Button>
+                        </Block>
+                      </Block>
+                    </Block>
+                  </Block>
+                </Block>
+              </Block>
+            </Block>
+          </ImageBackground>
+        </Block>
+      </DismissKeyboard>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  imageBackgroundContainer: {
+    backgroundColor: theme.COLORS.BLACK,
+  
+    width: width,
+    height: height,
+    padding: 0,
+    zIndex: 1
+  },
+  imageBackground: {
+    width: width,
+    height: height
+  },
+  registerContainer: {
+    marginTop: 55,
+    width: width * 0.9,
+    height: height < 812 ? height * 0.8 : height * 0.8,
+    backgroundColor: nowTheme.COLORS.WHITE,
+    borderRadius: 4,
+    shadowColor: nowTheme.COLORS.BLACK,
+    shadowOffset: {
+      width: 0,
+      height: 4
     },
-    inputTitle: {
-        color: "#8A8F9E",
-        fontSize: 10,
-        textTransform: "uppercase"
+    shadowRadius: 8,
+    shadowOpacity: 0.1,
+    elevation: 1,
+    overflow: 'hidden'
+  },
+  socialConnect: {
+    backgroundColor: nowTheme.COLORS.WHITE
+    // borderBottomWidth: StyleSheet.hairlineWidth,
+    // borderColor: "rgba(136, 152, 170, 0.3)"
+  },
+  socialButtons: {
+    width: 120,
+    height: 40,
+    backgroundColor: '#fff',
+    shadowColor: nowTheme.COLORS.BLACK,
+    shadowOffset: {
+      width: 0,
+      height: 4
     },
-    input: {
-        borderBottomColor: "#8A8F9E",
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        height: 40,
-        fontSize: 15,
-        color: "#161F3D"
-    },
-    button: {
-        marginHorizontal: 30,
-        backgroundColor: "#00b33c",
-        borderRadius: 4,
-        height: 52,
-        alignItems: "center",
-        justifyContent: "center"
-    },
-    errorMessage: {
-        height: 72,
-        alignItems: "center",
-        justifyContent: "center",
-        marginHorizontal: 30
-    },
-    error: {
-        color: "#E9446A",
-        fontSize: 13,
-        fontWeight: "600",
-        textAlign: "center"
-    },
-    back: {
-        position: "absolute",
-        top: 48,
-        left: 32,
-        width: 32,
-        height: 32,
-        borderRadius: 16,
-        backgroundColor: "rgba(21, 22, 48, 0.1)",
-        alignItems: "center",
-        justifyContent: "center"
-    },
-    avatar: {
-        width: 100,
-        height: 100,
-        backgroundColor: "#E1E2E6",
-        borderRadius: 50,
-        marginTop: 48,
-        justifyContent: "center",
-        alignItems: "center"
-    }
+    shadowRadius: 8,
+    shadowOpacity: 0.1,
+    elevation: 1
+  },
+  socialTextButtons: {
+    color: nowTheme.COLORS.PRIMARY,
+    fontWeight: '800',
+    fontSize: 14
+  },
+  inputIcons: {
+    marginRight: 12,
+    color: nowTheme.COLORS.ICON_INPUT
+  },
+  inputs: {
+    borderWidth: 1,
+    borderColor: '#E3E3E3',
+    borderRadius: 21.5
+  },
+  passwordCheck: {
+    paddingLeft: 2,
+    paddingTop: 6,
+    paddingBottom: 15
+  },
+  createButton: {
+    width: width * 0.5,
+    marginTop: 25,
+    marginBottom: 40
+  },
+  social: {
+    width: theme.SIZES.BASE * 3.5,
+    height: theme.SIZES.BASE * 3.5,
+    borderRadius: theme.SIZES.BASE * 1.75,
+    justifyContent: 'center',
+    marginHorizontal: 10
+  },
+  errorMessage: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 30,
+  },
+  error: {
+    color: '#E9446A',
+    fontSize: 13,
+    fontWeight: '600',
+    textAlign: 'center',
+  }
 });
