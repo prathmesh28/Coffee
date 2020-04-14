@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 
-export default class ReportScreen extends PureComponent {
+export default class Camera extends PureComponent {
     static navigationOptions = {
         headerShown: false
       };
@@ -28,7 +28,6 @@ export default class ReportScreen extends PureComponent {
             message: 'We need your permission to use your audio',
             buttonPositive: 'Ok',
             buttonNegative: 'Cancel',
-            
           }}
           onGoogleVisionBarcodesDetected={({ barcodes }) => {
             console.log(barcodes);

@@ -46,7 +46,7 @@ export default class RegisterScreen extends React.Component {
         <Block flex middle>
         <StatusBar hidden />
           <ImageBackground
-            //source={Images.RegisterBackground}
+            source={Images.RegisterBackground}
             style={styles.imageBackgroundContainer}
             imageStyle={styles.imageBackground}
           >
@@ -217,7 +217,6 @@ export default class RegisterScreen extends React.Component {
                         <Block center>
                           <Button color="primary" round style={styles.createButton}>
                             <Text
-                              //style={{ fontFamily: 'montserrat-bold' }}
                               size={14}
                               onPress={this.handleSignUp}
                               disabled={this.state.check}
@@ -254,7 +253,7 @@ const styles = StyleSheet.create({
     height: height
   },
   registerContainer: {
-    marginTop: 55,
+    //marginTop: 55,
     width: width * 0.9,
     height: height < 812 ? height * 0.8 : height * 0.8,
     backgroundColor: nowTheme.COLORS.WHITE,

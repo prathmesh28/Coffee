@@ -15,6 +15,7 @@ import ProfileScreen from "./screens/ProfileScreen";
 import StartScreen from "./screens/StartScreen";
 
 import ReportScreen from "./screens/ReportScreen";
+import { Camera } from "expo-camera";
 
 //import Camera from "./screens/Camera"
 
@@ -78,6 +79,7 @@ const AuthStack = createStackNavigator({
     Register: RegisterScreen
 });
 const SubmitStack = createStackNavigator({
+    //Cam:Camera,
     Report:ReportScreen
 });
 

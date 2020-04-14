@@ -46,14 +46,14 @@ export default class LoginScreen extends React.Component {
         <Block flex middle>
         <StatusBar hidden />
           <ImageBackground
-           // source={Images.RegisterBackground}
+            source={Images.ProfileBackground}
             style={styles.imageBackgroundContainer}
             imageStyle={styles.imageBackground}
           >
             <Block flex middle>
               <Block style={styles.registerContainer}>
                 <Block flex space="evenly">
-                  <Block flex={0.4} middle style={styles.socialConnect}>
+                  <Block flex={0.5} middle style={styles.socialConnect}>
                     <Block flex={0.5} middle>
                       <Text
                         style={{
@@ -119,7 +119,7 @@ export default class LoginScreen extends React.Component {
                   <Block flex={0.07} row style={styles.errorMessage}>
                   {this.state.errorMessage && (<Text style={styles.error}>{this.state.errorMessage}</Text>)}
                 </Block>
-                  <Block flex={1} middle space="between">
+                  <Block flex={0.8} middle space="between">
                     <Block center flex={0.9}>
                       <Block flex space="between">
                         <Block>
@@ -160,38 +160,15 @@ export default class LoginScreen extends React.Component {
                               }
                             />
                           </Block>
-                          <Block
-                            style={{ marginVertical: theme.SIZES.BASE, marginLeft: 15}}
-                            row
-                            width={width * 0.75}
-                          >
-                            <Checkbox
-                              onChange={ () => this.setState({check: !this.state.check}) }
-                              checkboxStyle={{
-                                borderWidth: 1,
-                                borderRadius: 2,
-                                borderColor: '#E3E3E3'
-                              }}
-                              color={nowTheme.COLORS.PRIMARY}
-                              labelStyle={{
-                                color: nowTheme.COLORS.HEADER,
-                                //fontFamily: 'montserrat-regular'
-                              }}
-                              label="I agree to the terms and conditions."
-                            />
-                          </Block>
+                          
                         </Block>
                         <Block center>
-                          <Button color="primary" round style={styles.createButton}>
-                            <Text
-                              //style={{ fontFamily: 'montserrat-bold' }}
-                              size={14}
-                              onPress={this.handleSignUp}
-                              disabled={this.state.check}
+                          <Button color="primary" round 
+                            style={styles.createButton}
+                            onPress={this.handleLogin}>
+                            <Text size={14}
                               color={nowTheme.COLORS.WHITE}
-                            >
-                              Log In
-                            </Text>
+                            >  Log In </Text>
                           </Button>
                         </Block>
                       </Block>
@@ -221,9 +198,9 @@ const styles = StyleSheet.create({
     height: height
   },
   registerContainer: {
-    marginTop: 55,
+    //marginTop: 30,
     width: width * 0.9,
-    height: height < 812 ? height * 0.8 : height * 0.7,
+    height: height < 812 ? height * 0.8 : height * 0.6,
     backgroundColor: nowTheme.COLORS.WHITE,
     borderRadius: 4,
     shadowColor: nowTheme.COLORS.BLACK,

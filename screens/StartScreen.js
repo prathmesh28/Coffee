@@ -14,10 +14,10 @@ export default class StartScreen extends React.Component {
       <Block flex style={styles.container}>
         <StatusBar hidden />
         <Block flex>
-          {/* <ImageBackground
+          <ImageBackground
             source={Images.Onboarding}
             style={{ flex: 1, height: height, width, zIndex: 1 }}
-          /> */}
+          />
           <Block center flex={0.9}  style={styles.padded}>
             <Block >
               {/* <Block middle>
