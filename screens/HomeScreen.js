@@ -16,7 +16,7 @@ export default class HomeScreen extends React.Component {
                     <Button
                         textStyle={{ fontSize: 20 }}
                         style={styles.button}
-                        onPress={() =>this.props.navigation.navigate('Report')}
+                        onPress={() =>this.props.navigation.navigate('Submit')}
                         >
                         Camera
                     </Button>

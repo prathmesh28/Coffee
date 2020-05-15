@@ -2,9 +2,9 @@
   "devToolsPort": 19002,
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 10032,
-  "expoServerNgrokUrl": "https://cq-hep.anonymous.coffee.exp.direct",
-  "packagerNgrokUrl": "https://packager.cq-hep.anonymous.coffee.exp.direct",
-  "ngrokPid": 7868,
+  "packagerPid": 9032,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null,
   "webpackServerPort": null
 }

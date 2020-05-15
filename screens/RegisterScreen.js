@@ -24,21 +24,54 @@ export default class RegisterScreen extends React.Component {
     headerShown: false
   };
   
-  state = { fname: "", lname: "", email: "", password: "", check: false, errorMessage: null }
+  state = { name: "", email: "", password: "", check: false, errorMessage: null, loading: false }
  
 
+  componentDidMount() {
+    this.RegisterBackground = require('../assets/login.jpg');
+  }
+
+
+  
   handleSignUp = () => {
-      
+    this.setState({
+      loading: true
+    })
+    let name=this.state.name
+    let email=this.state.email
+    let location= "new"
+    let photo = "new"
       Firebase
           .auth()
           .createUserWithEmailAndPassword(this.state.email, this.state.password)
           .then(userCredentials => {
-              return userCredentials.user.updateProfile({
-                  displayName: this.state.name
+            userCredentials.user.updateProfile({displayName: this.state.name});
+            Firebase.database().ref('UsersList/' + userCredentials.user.uid).set({
+                name,
+                email,
+                location,
+                photo
+                
+            }).then((data)=>{          
+            setTimeout(() => {
+              this.setState({
+                loading: false,
               });
+            }, 2500);
+            
+            }).catch((error)=>{
+             //   console.log('error ' , error)
+            })
           })
           .catch(error => this.setState({ errorMessage: error.message }));
-          AsyncStorage.setItem('email', this.state.email);
+          AsyncStorage.setItem('email', this.state.email, () => {
+          })
+          setTimeout(() => {
+            this.setState({
+              loading: false,
+            });
+          }, 500);
+        
   };
   render() {
     return (
@@ -46,7 +79,7 @@ export default class RegisterScreen extends React.Component {
         <Block flex middle>
         <StatusBar hidden />
           <ImageBackground
-            source={Images.RegisterBackground}
+            source={this.RegisterBackground}
             style={styles.imageBackgroundContainer}
             imageStyle={styles.imageBackground}
           >
@@ -125,9 +158,9 @@ export default class RegisterScreen extends React.Component {
                         <Block>
                           <Block width={width * 0.8} style={{ marginBottom: 5 }}>
                             <Input
-                              placeholder="First Name"
-                              onChangeText={fname => this.setState({ fname })}
-                              value={this.state.fname}
+                              placeholder="Full Name"
+                              onChangeText={name => this.setState({ name })}
+                              value={this.state.name}
                               style={styles.inputs}
                               iconContent={
                                 <Icon
@@ -140,23 +173,7 @@ export default class RegisterScreen extends React.Component {
                               }
                             />
                           </Block>
-                          <Block width={width * 0.8} style={{ marginBottom: 5 }}>
-                            <Input
-                              placeholder="Last Name"
-                              onChangeText={lname => this.setState({ lname })}
-                              value={this.state.lname}
-                              style={styles.inputs}
-                              iconContent={
-                                <Icon
-                                  size={16}
-                                  color="#ADB5BD"
-                                  name="caps-small2x"
-                                  family="NowExtra"
-                                  style={styles.inputIcons}
-                                />
-                              }
-                            />
-                          </Block>
+                          
                           <Block width={width * 0.8}>
                             <Input
                               placeholder="Email"
@@ -214,6 +231,7 @@ export default class RegisterScreen extends React.Component {
                             />
                           </Block>
                         </Block>
+                        {this.state.check && (<Text style={styles.error}>checkbox</Text>)}
                         <Block center>
                           <Button color="primary" round style={styles.createButton}>
                             <Text

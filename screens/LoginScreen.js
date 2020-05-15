@@ -8,10 +8,9 @@ import {
   Keyboard,
   AsyncStorage
 } from 'react-native';
-import { Block, Checkbox, Text, Button as GaButton, theme } from 'galio-framework';
+import { Block, Text, Button as GaButton, theme } from 'galio-framework';
 
 import { Button, Icon, Input } from '../components';
-import { Images, nowTheme } from '../constants';
 import Firebase from '../firebase';
 const { width, height } = Dimensions.get('screen');
 
@@ -29,7 +28,10 @@ export default class LoginScreen extends React.Component {
     errorMessage: null,
   };
 
-  componentDidMount = () => AsyncStorage.getItem('email').then((value) => this.setState({ 'email': value }))
+  componentDidMount () { 
+    this.ProfileBackground = require('../assets/login.jpg');
+    AsyncStorage.getItem('email').then((value) => this.setState({ 'email': value })) 
+  }
 
   handleLogin = () => {
     const { email, password } = this.state;
@@ -46,7 +48,7 @@ export default class LoginScreen extends React.Component {
         <Block flex middle>
         <StatusBar hidden />
           <ImageBackground
-            source={Images.ProfileBackground}
+            source={this.ProfileBackground}
             style={styles.imageBackgroundContainer}
             imageStyle={styles.imageBackground}
           >
@@ -74,9 +76,9 @@ export default class LoginScreen extends React.Component {
                         shadowless
                         icon="twitter"
                         iconFamily="Font-Awesome"
-                        iconColor={theme.COLORS.WHITE}
+                        iconColor={'#fff'}
                         iconSize={theme.SIZES.BASE * 1.625}
-                        color={nowTheme.COLORS.TWITTER}
+                        color={'#55acee'}
                         style={[styles.social, styles.shadow]}
                       />
 
@@ -86,9 +88,9 @@ export default class LoginScreen extends React.Component {
                         shadowless
                         icon="google"
                         iconFamily="Font-Awesome"
-                        iconColor={theme.COLORS.WHITE}
+                        iconColor={'#fff'}
                         iconSize={theme.SIZES.BASE * 1.625}
-                        color={nowTheme.COLORS.GOOGLE}
+                        color={'#dd4b39'}
                         style={[styles.social, styles.shadow]}
                       />
                       <GaButton
@@ -97,9 +99,9 @@ export default class LoginScreen extends React.Component {
                         shadowless
                         icon="facebook"
                         iconFamily="Font-Awesome"
-                        iconColor={theme.COLORS.WHITE}
+                        iconColor={'#fff'}
                         iconSize={theme.SIZES.BASE * 1.625}
-                        color={nowTheme.COLORS.FACEBOOK}
+                        color={'#3b5998'}
                         style={[styles.social, styles.shadow]}
                       />
                     </Block>
@@ -167,7 +169,7 @@ export default class LoginScreen extends React.Component {
                             style={styles.createButton}
                             onPress={this.handleLogin}>
                             <Text size={14}
-                              color={nowTheme.COLORS.WHITE}
+                              color={'#fff'}
                             >  Log In </Text>
                           </Button>
                         </Block>
@@ -186,7 +188,7 @@ export default class LoginScreen extends React.Component {
 
 const styles = StyleSheet.create({
   imageBackgroundContainer: {
-    backgroundColor: theme.COLORS.BLACK,
+    //backgroundColor: theme.COLORS.BLACK,
   
     width: width,
     height: height,
@@ -201,9 +203,10 @@ const styles = StyleSheet.create({
     //marginTop: 30,
     width: width * 0.9,
     height: height < 812 ? height * 0.8 : height * 0.6,
-    backgroundColor: nowTheme.COLORS.WHITE,
+    backgroundColor:'#fff',
     borderRadius: 4,
-    shadowColor: nowTheme.COLORS.BLACK,
+   
+   shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 4
@@ -214,7 +217,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden'
   },
   socialConnect: {
-    backgroundColor: nowTheme.COLORS.WHITE
+    backgroundColor: '#fff'
     // borderBottomWidth: StyleSheet.hairlineWidth,
     // borderColor: "rgba(136, 152, 170, 0.3)"
   },
@@ -222,7 +225,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 40,
     backgroundColor: '#fff',
-    shadowColor: nowTheme.COLORS.BLACK,
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 4
@@ -232,13 +235,13 @@ const styles = StyleSheet.create({
     elevation: 1
   },
   socialTextButtons: {
-    color: nowTheme.COLORS.PRIMARY,
+    color: '#f96332',
     fontWeight: '800',
     fontSize: 14
   },
   inputIcons: {
     marginRight: 12,
-    color: nowTheme.COLORS.ICON_INPUT
+    color: '#555555'
   },
   inputs: {
     borderWidth: 1,

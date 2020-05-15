@@ -1,21 +1,26 @@
 import React from 'react';
-import { ImageBackground, Image, StyleSheet, StatusBar, Dimensions, Platform } from 'react-native';
+import { ImageBackground, StyleSheet, StatusBar, Dimensions } from 'react-native';
 import { Block, Button, Text, theme } from 'galio-framework';
 const { height, width } = Dimensions.get('screen');
-import { Images, nowTheme } from '../constants/';
-import { HeaderHeight } from '../constants/utils';
 
 export default class StartScreen extends React.Component {
     static navigationOptions = {
         headerShown: false
       };
+      
+componentDidMount() {
+  
+  //this.Onboarding = require("../assets/start.jpg")
+}
+
+    
   render() {
     return (
       <Block flex style={styles.container}>
         <StatusBar hidden />
         <Block flex>
           <ImageBackground
-            source={Images.Onboarding}
+           source={require("../assets/start.jpg")}
             style={{ flex: 1, height: height, width, zIndex: 1 }}
           />
           <Block center flex={0.9}  style={styles.padded}>
@@ -27,12 +32,12 @@ export default class StartScreen extends React.Component {
                 <Button
                   shadowless
                   style={styles.button}
-                  color={nowTheme.COLORS.PRIMARY}
+                  color= {'#f96332'}
                   onPress={() =>this.props.navigation.navigate('Login')}
                 >
                   <Text
                     style={{ fontSize: 14 }}
-                    color={theme.COLORS.WHITE}
+                    color={'#fff'}
                   >
                     Login
                   </Text>
@@ -40,7 +45,7 @@ export default class StartScreen extends React.Component {
                 <Button
                   shadowless
                   style={styles.button}
-                  color={nowTheme.COLORS.PRIMARY}
+                  color= {'#f96332'}
                   onPress={() =>this.props.navigation.navigate('Register')}
                 >
                   <Text
