@@ -1,76 +1,95 @@
-import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { Dimensions,StatusBar, StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
+import { Block } from 'galio-framework'
+const { width, height } = Dimensions.get('screen');
+import { MaterialCommunityIcons, AntDesign } from '@expo/vector-icons'; 
+import Constants from 'expo-constants'
+import * as Location from 'expo-location'
+
 export default class CameraScreen extends React.Component {
+  static navigationOptions = {
+    headerShown: false
+  };
 
-
-    State = {
-        permissionsGranted: false,
-      };
+  constructor(props) {
+    super(props)
+    this.state = {
+      loc: 'lol',
+      }
+    }
 
      
     async componentDidMount() {
         if (Platform.OS === 'web') {
           return;
         }
-    
-        const { status } = await Permissions.askAsync(Permissions.CAMERA);
-        this.setState({ permission: status, permissionsGranted: status === 'granted' });
-    
-        try {
-          await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'photos');
-        } catch (error) {
-          // tslint:disable-next-line no-console
-          console.log(error, 'Directory exists');
+        //Permissions
+        const { status } = await Permissions.askAsync(
+          Permissions.CAMERA,
+          Permissions.LOCATION
+          )
+        if (status === 'granted') {
+          Alert.alert('lol')
+        } else {
+          Alert.alert(
+            'Permissions Needed!',
+            'App requires Camera and Location Permission',
+            [
+              { text: 'OK', onPress: () => this.props.navigation.navigate('App') }
+            ],
+            { cancelable: false }
+          );
         }
+        
+    }
+
+      //button click
+    takePicture = () => {
+      let location = Location.getCurrentPositionAsync({ enableHighAccuracy: true })
+      let loc = JSON.stringify(location);
+      this.setState({ loc })
+      if (this.camera) {
+          this.camera.takePictureAsync({ onPictureSaved: this.onPictureSaved.bind(this) });
       }
-      takePicture = () => {
-        if (this.camera) {
-            this.camera.takePictureAsync({ onPictureSaved: this.onPictureSaved });
-        }
      };
   
+
+     //navigates to display page with photo
     onPictureSaved = photo => {
-        console.log(photo);
-    } 
+        this.props.navigation.navigate('show', { photo: photo, loc:this.state.loc })
+    }
 
     render() {
-        
-            if (this.State.permission === null) {
-                return <View />;
-              }
-              if (this.State.permission === false) {
-                return <Text>No access to camera</Text>;
-              }
-              return (
-                <View style={{ flex: 1 }}>
-                  <Camera style={{ flex: 1 }} type={Camera.Constants.Type.back} ref={(ref) => { this.camera = ref }} >
-                    <View
-                      style={{
-                        flex: 1,
-                        backgroundColor: 'transparent',
-                        flexDirection: 'row',
-                      }}>
-
-    <TouchableOpacity style={{alignSelf: 'center', justifyContent: "center"}} onPress={this.takePicture}>
-          <Text style={{ fontSize: 22, color: 'white' }}>capture</Text> 
-    </TouchableOpacity>
-                          
-                      <TouchableOpacity
-                        style={{
-                          flex: 0.1,
-                          alignSelf: 'flex-end',
-                          alignItems: 'center',
-                        }}
-                        onPress={() =>this.props.navigation.navigate('App')}
-                        >
-                        <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> back </Text>
-                      </TouchableOpacity>
-                   
-                    </View>
-                  </Camera>
-                </View>
+      return (
+         <View style={{ flex: 1, backgroundColor:'black' }}>
+           <StatusBar 
+          translucent={true} 
+          backgroundColor={'transparent'} 
+        />
+          <Camera style={{ flex:1, margin:10,marginTop:Constants.statusBarHeight }} type={Camera.Constants.Type.back} ref={(ref) => { this.camera = ref }} >
+            <View
+              style={{
+                width: width-20,
+                position: 'absolute',
+                height: 80,
+                bottom: 0,
+                padding:20,
+                backgroundColor:'black',
+                display:"flex",
+                flexDirection:"row",
+                alignItems:"center",
+              }}>
+                <TouchableOpacity style={{flex:0.45}} onPress={() =>this.props.navigation.navigate('App')}>
+                  <AntDesign name="back" size={34} color="white" />
+                </TouchableOpacity>
+                <TouchableOpacity style={{ flex:0.55 }} onPress={this.takePicture.bind(this) }>
+                  <MaterialCommunityIcons name="camera-iris" size={44} color="white" />
+                </TouchableOpacity>
+            </View>
+          </Camera>
+         </View>
               
         )
     }

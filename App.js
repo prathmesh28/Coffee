@@ -14,6 +14,7 @@ import ProfileScreen from "./screens/ProfileScreen";
 import StartScreen from "./screens/StartScreen";
 
 import CameraScreen from "./screens/Camera/CameraScreen"
+import DisplayScreen from './screens/Camera/DisplayScreen'
 
 const AppTabNavigator = createBottomTabNavigator(
     {
@@ -57,8 +58,8 @@ const AuthStack = createStackNavigator({
     Register: RegisterScreen
 });
 const SubmitStack = createStackNavigator({
-    //Cam:Camera,
-    cam:CameraScreen
+    cam:CameraScreen,
+    show:DisplayScreen
 });
 
 export default createAppContainer(
