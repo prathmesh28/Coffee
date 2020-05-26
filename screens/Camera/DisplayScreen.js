@@ -5,7 +5,10 @@ import storage from '@react-native-firebase/storage';
 import { utils } from '@react-native-firebase/app';
 import firebase from '../../firebase'
 import Constants from 'expo-constants'
-import MapView from 'expo';
+//import MapView from 'expo';
+import MapView from 'react-native-maps';
+import { Marker } from 'react-native-maps';
+import * as Location from 'expo-location'
 
 const { width, height } = Dimensions.get('screen');
 
@@ -13,6 +16,10 @@ const { width, height } = Dimensions.get('screen');
 import uuid from 'uuid';
 var uid
 let weed
+let LatLng = {
+  latitude: 37,
+  longitude: -122,
+}
 export default class DisplayScreen extends React.Component {
   static navigationOptions = {
     headerShown: false
@@ -21,24 +28,67 @@ export default class DisplayScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-        imageclick: null,
-        loc: 'unknown',
+        imageclick: null,   
+        lat:37,
+        lon:-122
       }
     }
 
-      componentDidMount = () => {
+    async componentDidMount () {
+        let location = await Location.getCurrentPositionAsync({  })
+
+       // let location = JSON.stringify(loc)
+        // console.log(loc.coords.longitude)
+        console.log(location.coords.longitude)
+        let lat = location.coords.latitude
+        let lon = location.coords.longitude
+        LatLng =  {
+          latitude: lat,
+          longitude: lon,
+        }
+
+    //    this.setState({ location })
+        // let loc = Location.getCurrentPositionAsync({ enableHighAccuracy: true })
+        // let location = JSON.stringify(loc)
+        // console.log(loc)
+        // console.log(location)
         uid = firebase.auth().currentUser.uid
         const photo= this.props.navigation.getParam('photo') 
-        const loc= this.props.navigation.getParam('loc') 
+     //   const location= this.props.navigation.getParam('loc') 
+
+    //    console.log(this.state.region.latitude)
+    //    let location = await Location.getCurrentPositionAsync({});
+      //  this.setState({ locationResult: JSON.stringify(location), location, });
         
+        // console.log('first',this.state.location)
+        // console.log('sec',this.state.locationResult)
+        // console.log(this.state.locationResult)
+
+
+        // //console.log(loc)
+        // let location = JSON.stringify(loc);
+        // console.log(location[4])
+
+        // //console.log(location['Promise'])
+        // //let minutesWriting = myObj['meta']['minutesWriting']
+     
         weed = photo.width/photo.height
         this.setState({ 
           imageclick: photo.uri,
-          loc
+          lat,
+          lon
+      
          })
+
          
+      }
+
+
+      
+
+      _handleMapRegionChange = mapRegion => {
+        this.setState({ mapRegion });
       };
- 
 
   submitButt = async () => {
     //   var today = new Date();
@@ -92,13 +142,33 @@ export default class DisplayScreen extends React.Component {
                       borderBottomWidth: 1,
                     }}
                   />
-                  <Text> Loc: {this.state.loc}</Text>
-                  {/* <MapView
-                    style={{ alignSelf: 'stretch', height: 400 }}
-                 //   region={this.state.loc}
+                  {/* <Text> Loc: {this.state.loc}</Text> */}
+                  {/* <MapView style={{ width:200, height:200 }} 
+                //    region={this.state.location}
                   /> */}
-                </Block>
+{/* 
+
+                  {console.log('first',this.state.location)}
+                  {console.log('sec',this.state.locationResult)} */}
+        <MapView
+          style={{ alignSelf: 'stretch', height: 200 }}
+          region={{ latitude: this.state.lat, longitude: this.state.lon, latitudeDelta: 0.01, longitudeDelta: 0.01 }}
+          //onRegionChange={this._handleMapRegionChange}
+        >
+        <Marker
+      coordinate={LatLng}
+      title="hi"
+      description="dis"
+    />
+        </MapView>
+        {/* <MapView
+            coordinate={this.state.location.coords}
+            title="My Marker"
+            description="Some description"
+          /> */}
+               
                 <Button onPress={() => this.submitButt() } ><Text>submit</Text></Button>
+                </Block>
             </Block>
         );
     }

@@ -16,7 +16,6 @@ export default class CameraScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      loc: 'lol',
       }
     }
 
@@ -47,9 +46,6 @@ export default class CameraScreen extends React.Component {
 
       //button click
     takePicture = () => {
-      let location = Location.getCurrentPositionAsync({ enableHighAccuracy: true })
-      let loc = JSON.stringify(location);
-      this.setState({ loc })
       if (this.camera) {
           this.camera.takePictureAsync({ onPictureSaved: this.onPictureSaved.bind(this) });
       }
@@ -58,7 +54,7 @@ export default class CameraScreen extends React.Component {
 
      //navigates to display page with photo
     onPictureSaved = photo => {
-        this.props.navigation.navigate('show', { photo: photo, loc:this.state.loc })
+        this.props.navigation.navigate('show', { photo: photo })
     }
 
     render() {
