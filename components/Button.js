@@ -1,62 +1,99 @@
-import React from 'react';
-import { StyleSheet } from 'react-native';
-import PropTypes from 'prop-types';
-import { Button } from 'galio-framework';
+import React, { Component } from 'react';
+import { StyleSheet, TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { theme } from '../constants';
 
-import nowTheme from '../constants/Theme';
-
-class ArButton extends React.Component {
+class Button extends Component {
   render() {
-    const { small, shadowless, children, color, style, fontSize, round, ...props } = this.props;
-
-    const colorStyle = color && nowTheme.COLORS[color.toUpperCase()];
+    const {
+      style,
+      opacity,
+      gradient,
+      color,
+      startColor,
+      endColor,
+      end,
+      start,
+      locations,
+      shadow,
+      children,
+      ...props
+    } = this.props;
 
     const buttonStyles = [
-      small && styles.smallButton,
-      colorStyle === 'neutral'
-        ? { backgroundColor: 'rgba(0,0,0,0)' }
-        : color && { backgroundColor: colorStyle },
-      round && { borderRadius: nowTheme.SIZES.BASE * 2 },
-      !shadowless && styles.shadow,
-      { ...style }
+      styles.button,
+      shadow && styles.shadow,
+      color && styles[color], // predefined styles colors for backgroundColor
+      color && !styles[color] && { backgroundColor: color }, // custom backgroundColor
+      style,
     ];
 
+    if (gradient) {
+      return (
+        <TouchableOpacity
+          style={buttonStyles}
+          activeOpacity={opacity}
+          {...props}
+        >
+          <LinearGradient
+            start={start}
+            end={end}
+            locations={locations}
+            style={buttonStyles}
+            colors={[startColor, endColor]}
+          >
+            {children}
+          </LinearGradient>
+           
+        </TouchableOpacity>
+      )
+    }
+
     return (
-      <Button
+      <TouchableOpacity
         style={buttonStyles}
-        shadowless
-        textStyle={{ fontSize: fontSize || 12, fontWeight: '700' }}
+        activeOpacity={opacity || 0.8}
         {...props}
       >
         {children}
-      </Button>
-    );
+      </TouchableOpacity>
+    )
   }
 }
 
-ArButton.propTypes = {
-  small: PropTypes.bool,
-  shadowless: PropTypes.bool,
-  color: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.oneOf([
-      'default',
-      'primary',
-      'info',
-      'error',
-      'success',
-      'warning',
-      'simple',
-      'neutral'
-    ])
-  ])
-};
+Button.defaultProps = {
+  startColor: theme.colors.primary,
+  endColor: theme.colors.secondary,
+  start: { x: 0, y: 0 },
+  end: { x: 1, y: 1 },
+  locations: [0.1, 0.9],
+  opacity: 0.8,
+  color: theme.colors.white,
+}
+
+export default Button;
 
 const styles = StyleSheet.create({
-  smallButton: {
-    width: 75,
-    height: 28
-  }
+  button: {
+    borderRadius: theme.sizes.radius,
+    height: theme.sizes.base * 3,
+    justifyContent: 'center',
+    marginVertical: theme.sizes.padding / 3,
+  },
+  shadow: {
+    shadowColor: theme.colors.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+  },
+  accent: { backgroundColor: theme.colors.accent, },
+  primary: { backgroundColor: theme.colors.primary, },
+  secondary: { backgroundColor: theme.colors.secondary, },
+  tertiary: { backgroundColor: theme.colors.tertiary, },
+  black: { backgroundColor: theme.colors.black, },
+  white: { backgroundColor: theme.colors.white, },
+  gray: { backgroundColor: theme.colors.gray, },
+  gray2: { backgroundColor: theme.colors.gray2, },
+  gray3: { backgroundColor: theme.colors.gray3, },
+  gray4: { backgroundColor: theme.colors.gray4, },
 });
-
-export default ArButton;

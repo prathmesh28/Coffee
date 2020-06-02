@@ -1,279 +1,186 @@
-import React from 'react';
+import React, { Component } from "react"  
+import { Ionicons } from '@expo/vector-icons'   
+import Modal from 'react-native-modal'  
+import { LinearGradient } from 'expo-linear-gradient'
 import {
-  StyleSheet,
-  ImageBackground,
+  SafeAreaView,
   Dimensions,
   StatusBar,
-  TouchableWithoutFeedback,
-  Keyboard,
-  AsyncStorage
-} from 'react-native';
-import { Block, Text, Button as GaButton, theme } from 'galio-framework';
-
-import { Button, Icon, Input } from '../components';
-import Firebase from '../firebase';
-const { width, height } = Dimensions.get('screen');
-
-const DismissKeyboard = ({ children }) => (
-  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
-);
-
-export default class LoginScreen extends React.Component {
+  ActivityIndicator,
+  AsyncStorage,
+  TouchableOpacity,
+  StyleSheet,
+  View
+} from "react-native"  
+import { Button, Block, Input, Text } from "../components"  
+import { theme } from "../constants"  
+const { height, width } = Dimensions.get('screen')  
+import Firebase from '../firebase'
+export default class Login extends Component {
   static navigationOptions = {
     headerShown: false
-  };
+  }
+
   state = {
     email: '',
     password: '',
     errorMessage: null,
-  };
+    loading: false,
+    pass: false
+  }  
 
   componentDidMount () { 
-    this.ProfileBackground = require('../assets/login.jpg');
     AsyncStorage.getItem('email').then((value) => this.setState({ 'email': value })) 
   }
 
+  toggleModal = () => {
+    this.setState({pass: true})  
+  }  
+
+  handlePasswordReset = async (values, actions) => {
+    const { email } = this.state  
+    try {
+      Firebase.auth().sendPasswordResetEmail(email)
+    } catch (error) {
+    }
+    this.setState({passs: false})  
+  }
+
   handleLogin = () => {
-    const { email, password } = this.state;
+    const { email, password } = this.state  
 
     Firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .catch(error => this.setState({ errorMessage: error.message }));
-    AsyncStorage.setItem('email', email);
-  };
+      .catch(error => this.setState({ errorMessage: error.message }))  
+    AsyncStorage.setItem('email', email)  
+  }  
+
   render() {
+   
     return (
-      <DismissKeyboard>
-        <Block flex middle>
-        <StatusBar hidden />
-          <ImageBackground
-            source={this.ProfileBackground}
-            style={styles.imageBackgroundContainer}
-            imageStyle={styles.imageBackground}
-          >
-            <Block flex middle>
-              <Block style={styles.registerContainer}>
-                <Block flex space="evenly">
-                  <Block flex={0.5} middle style={styles.socialConnect}>
-                    <Block flex={0.5} middle>
-                      <Text
-                        style={{
-                          //fontFamily: 'montserrat-regular',
-                          textAlign: 'center'
-                        }}
-                        color="#333"
-                        size={24}
-                      >
-                        Login
-                      </Text>
-                    </Block>
-
-                    <Block flex={0.5} row middle space="between" style={{ marginBottom: 18 }}>
-                      <GaButton
-                        round
-                        onlyIcon
-                        shadowless
-                        icon="twitter"
-                        iconFamily="Font-Awesome"
-                        iconColor={'#fff'}
-                        iconSize={theme.SIZES.BASE * 1.625}
-                        color={'#55acee'}
-                        style={[styles.social, styles.shadow]}
-                      />
-
-                      <GaButton
-                        round
-                        onlyIcon
-                        shadowless
-                        icon="google"
-                        iconFamily="Font-Awesome"
-                        iconColor={'#fff'}
-                        iconSize={theme.SIZES.BASE * 1.625}
-                        color={'#dd4b39'}
-                        style={[styles.social, styles.shadow]}
-                      />
-                      <GaButton
-                        round
-                        onlyIcon
-                        shadowless
-                        icon="facebook"
-                        iconFamily="Font-Awesome"
-                        iconColor={'#fff'}
-                        iconSize={theme.SIZES.BASE * 1.625}
-                        color={'#3b5998'}
-                        style={[styles.social, styles.shadow]}
-                      />
-                    </Block>
-                  </Block>
-                  <Block flex={0.1} middle>
-                    <Text
-                      style={{
-                        //fontFamily: 'montserrat-regular',
-                        textAlign: 'center'
-                      }}
-                      muted
-                      size={16}
-                    >
-                      or be classical
+    <SafeAreaView style={styles.container}>
+      <Block  style={styles.signup} >
+        <StatusBar  />
+        <Modal isVisible={this.state.pass} onBackdropPress={() => this.setState({pass: false})}>
+          <View  style={styles.activityIndicatorWrapper} >
+         
+           
+         
+                <Text bold title>
+                  Reset Password
+                </Text>
+                <Input
+                  email
+                  onChangeText={email => this.setState({ email })}
+                  defaultValue={this.state.email}
+                  placeholder=' Enter email'
+                  style={{width:width*0.5,padding:1}}
+                />
+                <TouchableOpacity  onPress={this.handlePasswordReset}>
+           
+                  <Text primary h2 bold>Send Email</Text>
+                </TouchableOpacity>
+              
+              </View>
+            </Modal>
+        <Block  style={{ top:7,width:width, position:'absolute',}}>
+          <Ionicons style={{margin:20}}  name="ios-arrow-back" size={24} color="black" onPress={() =>this.props.navigation.navigate('Start')} />
+          <Button shadow style={{width:80,margin:10,right:5,position:'absolute'}}  onPress={() =>this.props.navigation.navigate('Register')}>
+                    <Text bold center >
+                      Sign Up
                     </Text>
-                  </Block>
-                  <Block flex={0.07} row style={styles.errorMessage}>
-                  {this.state.errorMessage && (<Text style={styles.error}>{this.state.errorMessage}</Text>)}
-                </Block>
-                  <Block flex={0.8} middle space="between">
-                    <Block center flex={0.9}>
-                      <Block flex space="between">
-                        <Block>
-                          
-                          <Block width={width * 0.8}>
-                            <Input
-                              placeholder="Email"
-                              onChangeText={email => this.setState({ email })}
-                              value={this.state.email}
-                              style={styles.inputs}
-                              iconContent={
-                                <Icon
-                                  size={16}
-                                  color="#ADB5BD"
-                                  name="email-852x"
-                                  family="NowExtra"
-                                  style={styles.inputIcons}
-                                />
-                              }
-                            />
-                          </Block>
-                          <Block width={width * 0.8}>
-                            <Input
-                              secureTextEntry
-                              autoCapitalize="none"
-                              placeholder="Password"
-                              onChangeText={password => this.setState({ password })}
-                              value={this.state.password}
-                              style={styles.inputs}
-                              iconContent={
-                                <Icon
-                                  size={16}
-                                  color="#ADB5BD"
-                                  name="key-252x"
-                                  family="NowExtra"
-                                  style={styles.inputIcons}
-                                />
-                              }
-                            />
-                          </Block>
-                          
-                        </Block>
-                        <Block center>
-                          <Button color="primary" round 
-                            style={styles.createButton}
-                            onPress={this.handleLogin}>
-                            <Text size={14}
-                              color={'#fff'}
-                            >  Log In </Text>
-                          </Button>
-                        </Block>
-                      </Block>
-                    </Block>
-                  </Block>
-                </Block>
-              </Block>
-            </Block>
-          </ImageBackground>
+          </Button>
+          
         </Block>
-      </DismissKeyboard>
-    );
+      
+        <Block middle style={{ top:70,width:width*0.85, position:'absolute', alignSelf:'center',height:height*0.85}}>
+
+            <Block middle flex={0.2}>
+                <Text h1 bold>
+                    Sign In
+                </Text>
+            </Block>
+        
+          <Block flex={0.1} style={styles.errorMessage}>
+                  {this.state.errorMessage && (<Text style={styles.error}>{this.state.errorMessage}</Text>)}
+          </Block>
+            <Block flex={0.5}>
+                <Input
+                  email
+                  label="Email"
+                  style={[styles.input]}
+                  onChangeText={email => this.setState({ email })}
+                  defaultValue={this.state.email}
+                />
+                <Input
+                  secure
+                  label="Password"
+                  style={[styles.input]}
+                  onChangeText={password => this.setState({ password })}
+                  defaultValue={this.state.password}
+                />
+                <Button gradient onPress={() => this.handleLogin()}>
+                    <Text bold center >
+                      Sign In
+                    </Text>
+                </Button>
+                
+            </Block>
+            <Block flex={0.2}>
+              <TouchableOpacity onPress={this.toggleModal}  >
+                <Text bold primary spacing={0.7} style={{textDecorationLine: 'underline'}}>Forget Password ?</Text>
+              </TouchableOpacity>
+            </Block>
+            
+          
+        </Block>
+        
+    </Block>
+     
+      </SafeAreaView>
+    )  
   }
 }
 
 const styles = StyleSheet.create({
-  imageBackgroundContainer: {
-    //backgroundColor: theme.COLORS.BLACK,
+  container: {
+    flex: 1,
   
-    width: width,
-    height: height,
-    padding: 0,
-    zIndex: 1
   },
-  imageBackground: {
-    width: width,
-    height: height
+  signup: {
+    justifyContent: "center",
   },
-  registerContainer: {
-    //marginTop: 30,
-    width: width * 0.9,
-    height: height < 812 ? height * 0.8 : height * 0.6,
-    backgroundColor:'#fff',
-    borderRadius: 4,
-   
-   shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4
-    },
-    shadowRadius: 8,
-    shadowOpacity: 0.1,
-    elevation: 1,
-    overflow: 'hidden'
+  input: {
+    marginVertical:10,
+    borderRadius: 0,
+    borderWidth: 0,
+    borderBottomColor: theme.colors.gray2,
+    borderBottomWidth: StyleSheet.hairlineWidth
   },
-  socialConnect: {
-    backgroundColor: '#fff'
-    // borderBottomWidth: StyleSheet.hairlineWidth,
-    // borderColor: "rgba(136, 152, 170, 0.3)"
-  },
-  socialButtons: {
-    width: 120,
-    height: 40,
-    backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4
-    },
-    shadowRadius: 8,
-    shadowOpacity: 0.1,
-    elevation: 1
-  },
-  socialTextButtons: {
-    color: '#f96332',
-    fontWeight: '800',
-    fontSize: 14
-  },
-  inputIcons: {
-    marginRight: 12,
-    color: '#555555'
-  },
-  inputs: {
-    borderWidth: 1,
-    borderColor: '#E3E3E3',
-    borderRadius: 21.5
-  },
-  passwordCheck: {
-    paddingLeft: 2,
-    paddingTop: 6,
-    paddingBottom: 15
-  },
-  createButton: {
-    width: width * 0.5,
-    marginTop: 25,
-    marginBottom: 40
-  },
-  social: {
-    width: theme.SIZES.BASE * 3.5,
-    height: theme.SIZES.BASE * 3.5,
-    borderRadius: theme.SIZES.BASE * 1.75,
-    justifyContent: 'center',
-    marginHorizontal: 10
+  activityIndicatorWrapper: {
+    backgroundColor: "#FFFFFF",
+    height:height*0.3,
+    width: width*0.8,
+     borderRadius: 10,
+    // display: "flex",
+     alignItems: "center",
+     alignSelf:"center",
+     justifyContent: "space-around",
   },
   errorMessage: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: 30,
+     height: 20,
   },
   error: {
     color: '#E9446A',
     fontSize: 13,
     fontWeight: '600',
     textAlign: 'center',
-  }
-});
+  },
+  button: {
+    borderRadius: theme.sizes.radius,
+    height: theme.sizes.base * 3,
+    justifyContent: 'center',
+    marginVertical: theme.sizes.padding / 3,
+  },
+})  

@@ -1,6 +1,5 @@
-import nowTheme from './Theme';
+import * as theme from './theme';
 
-import Images from './Images';
-
-
-export { nowTheme, Images };
+export {
+  theme,
+};

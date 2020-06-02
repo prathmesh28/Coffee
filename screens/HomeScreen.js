@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, LayoutAnimation } from "react-native";
-import { Block, Button, Text, theme } from 'galio-framework'
+import { Block, theme } from 'galio-framework'
+import { Avatar,Text, Button, Card, Title, Paragraph } from 'react-native-paper';
 import Firebase from '../firebase';
 export default class HomeScreen extends React.Component {
     state = { email: "", displayName: "" };
@@ -12,16 +13,22 @@ export default class HomeScreen extends React.Component {
         LayoutAnimation.easeInEaseOut();
         return (
             <Block flex>
-                <Block center>
-                    <Button
-                        textStyle={{ fontSize: 20 }}
-                        style={styles.button}
-                        onPress={() =>this.props.navigation.navigate('Submit')}
-                        >
-                        Camera
+                
+
+                <Card style={{
+                    marginTop:100,
+                    alignSelf:'center',
+                    width:200,
+                    }}
+                    onPress={() =>this.props.navigation.navigate('Submit')}
+                     >
+                    <Card.Content style={{backgroundColor:'#32CD32', borderRadius:10}}>
+                    <Button icon="camera" color={'black'}>
+                        Report
                     </Button>
+                    </Card.Content>
+                </Card>  
                 </Block>
-            </Block>
         );
     }
 }

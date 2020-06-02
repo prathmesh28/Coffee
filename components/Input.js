@@ -1,82 +1,125 @@
-import React from "react";
-import { StyleSheet } from "react-native";
-import PropTypes from 'prop-types';
+import React, { Component } from 'react'
+import { StyleSheet, TextInput } from 'react-native'
+import { Ionicons } from '@expo/vector-icons';
+import Text from './Text';
+import Block from './Block';
+import Button from './Button';
+import { theme } from '../constants';
 
-import { Input } from "galio-framework";
+export default class Input extends Component {
+  state = {
+    toggleSecure: false,
+  }
 
-import Icon from './Icon';
-import { nowTheme } from "../constants";
+  renderLabel() {
+    const { label, error } = this.props;
 
-class ArInput extends React.Component {
+    return (
+      <Block flex={false}>
+        {label ? <Text gray={!error} accent={error}>{label}</Text> : null}
+      </Block>
+    )
+  }
+
+  renderToggle() {
+    const { secure, rightLabel } = this.props;
+    const { toggleSecure } = this.state;
+
+    if (!secure) return null;
+
+    return (
+      <Button
+        style={styles.toggle}
+        onPress={() => this.setState({ toggleSecure: !toggleSecure })}
+      >
+        {
+          rightLabel ? rightLabel :
+            <Ionicons
+              color={theme.colors.gray}
+              size={theme.sizes.font * 1.35}
+              name={!toggleSecure ? "md-eye" : "md-eye-off"}
+          />
+        }
+      </Button>
+    );
+  }
+
+  renderRight() {
+    const { rightLabel, rightStyle, onRightPress } = this.props;
+
+    if (!rightLabel) return null;
+
+    return (
+      <Button
+        style={[styles.toggle, rightStyle]}
+        onPress={() => onRightPress && onRightPress()}
+      >
+        {rightLabel}
+      </Button>
+    );
+  }
+
   render() {
-    const { shadowless, success, error, primary } = this.props;
+    const {
+      email,
+      phone,
+      number,
+      secure,
+      error,
+      style,
+      ...props
+    } = this.props;
+
+    const { toggleSecure } = this.state;
+    const isSecure = toggleSecure ? false : secure;
 
     const inputStyles = [
       styles.input,
-      !shadowless,
-      success && styles.success,
-      error && styles.error,
-      primary && styles.primary,
-      {...this.props.style}
+      error && { borderColor: theme.colors.accent },
+      style,
     ];
 
+    const inputType = email
+      ? 'email-address' : number
+      ? 'numeric' : phone
+      ? 'phone-pad' : 'default';
+
     return (
-      <Input
-        placeholder="write something here"
-        placeholderTextColor={nowTheme.COLORS.MUTED}
-        style={inputStyles}
-        color={nowTheme.COLORS.HEADER}
-        iconContent={
-          <Icon
-            size={14}
-            color={nowTheme.COLORS.ICON}
-            name="link"
-            family="AntDesign"
-          />
-        }
-        {...this.props}
-      />
-    );
+      <Block flex={false} margin={[theme.sizes.base, 0]}>
+        {this.renderLabel()}
+        <TextInput
+          style={inputStyles}
+          secureTextEntry={isSecure}
+          autoComplete="off"
+          autoCapitalize="none"
+          autoCorrect={false}
+          keyboardType={inputType}
+          {...props}
+        />
+        {this.renderToggle()}
+        {this.renderRight()}
+      </Block>
+    )
   }
-}
-
-ArInput.defaultProps = {
-  shadowless: false,
-  success: false,
-  error: false,
-  primary: false
-};
-
-ArInput.propTypes = {
-  shadowless: PropTypes.bool,
-  success: PropTypes.bool,
-  error: PropTypes.bool,
-  primary: PropTypes.bool
 }
 
 const styles = StyleSheet.create({
   input: {
-    borderRadius: 30,
-    borderColor: nowTheme.COLORS.BORDER,
-    height: 44,
-    backgroundColor: '#FFFFFF'
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: theme.colors.black,
+    borderRadius: theme.sizes.radius,
+    fontSize: theme.sizes.font,
+    fontWeight: '500',
+    color: theme.colors.black,
+    height: theme.sizes.base * 3,
   },
-  success: {
-    borderColor: nowTheme.COLORS.INPUT_SUCCESS
-  },
-  error: {
-    borderColor: nowTheme.COLORS.INPUT_ERROR
-  },
-  primary: {
-    borderColor: nowTheme.COLORS.PRIMARY
-  },
-  shadow: {
-    shadowColor: nowTheme.COLORS.BLACK,
-    shadowOffset: { width: 0, height: 0.5 },
-    shadowRadius: 1,
-    shadowOpacity: 0.13,
-    elevation: 2,
+  toggle: {
+    position: 'absolute',
+    alignItems: 'center',
+    width: theme.sizes.base * 2,
+    height: theme.sizes.base * 2,
+    top: theme.sizes.base,
+    right: 0,
+    
   }
 });
-
-export default ArInput;

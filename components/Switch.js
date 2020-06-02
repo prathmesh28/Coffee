@@ -1,35 +1,31 @@
-import React from "react";
-import { Switch, Platform } from "react-native";
+import React from 'react';
+import { Switch, Platform } from 'react-native';
 
-import nowTheme from "../constants/Theme";
+import { theme } from '../constants';
 
-class MkSwitch extends React.Component {
+const GRAY_COLOR = 'rgba(168, 182, 200, 0.30)';
+
+export default class SwitchInput extends React.PureComponent {
   render() {
     const { value, ...props } = this.props;
-    const thumbColor =
-      Platform.OS === "ios"
-        ? nowTheme.COLORS.PRIMARY
-        : Platform.OS === "android" && value
-        ? nowTheme.COLORS.SWITCH_ON
-        : nowTheme.COLORS.SWITCH_OFF;
+    let thumbColor = null;
+
+    if (Platform.OS === 'android') {
+      thumbColor = GRAY_COLOR;
+      if (props.value) thumbColor = theme.colors.secondary;
+    }
 
     return (
       <Switch
-        value={value}
-        thumbColor={[
-          value === true
-            ? nowTheme.COLORS.SWITCH_ON
-            :'#ffffff'
-        ]}
-        ios_backgroundColor={"#D8D8D8"}
+        thumbColor={thumbColor}
+        ios_backgroundColor={GRAY_COLOR}
         trackColor={{
-          true: "#d3d3d3",
-          false: Platform.OS == "ios" ? "#d3d3d3" : "#333"
+          // false: GRAY_COLOR,
+          true: theme.colors.secondary
         }}
+        value={value}
         {...props}
       />
     );
   }
 }
-
-export default MkSwitch;

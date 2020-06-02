@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions,View, Image, StyleSheet, LayoutAnimation, Alert } from "react-native";
+import { Dimensions,View, Image, StyleSheet, LayoutAnimation, Alert,ToastAndroid } from "react-native";
 import { Block, Button, Text, theme } from 'galio-framework'
 import storage from '@react-native-firebase/storage';
 import { utils } from '@react-native-firebase/app';
@@ -9,17 +9,17 @@ import Constants from 'expo-constants'
 import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps';
 import * as Location from 'expo-location'
-
 const { width, height } = Dimensions.get('screen');
 
-
-import uuid from 'uuid';
+let Pincode
+let link
 var uid
 let weed
 let LatLng = {
   latitude: 37,
   longitude: -122,
 }
+
 export default class DisplayScreen extends React.Component {
   static navigationOptions = {
     headerShown: false
@@ -30,57 +30,73 @@ export default class DisplayScreen extends React.Component {
     this.state = {
         imageclick: null,   
         lat:37,
-        lon:-122
+        lon:-122,
+        uploaded:false,
+        data:null
       }
     }
-
     async componentDidMount () {
+     
         let location = await Location.getCurrentPositionAsync({  })
-
-       // let location = JSON.stringify(loc)
-        // console.log(loc.coords.longitude)
-        console.log(location.coords.longitude)
         let lat = location.coords.latitude
         let lon = location.coords.longitude
         LatLng =  {
           latitude: lat,
           longitude: lon,
         }
+        let geocode = await Location.reverseGeocodeAsync(location.coords); 
+        // this.setState({ 
+        //   //this.state.data.Pincode: '234'
+        //  })
 
-    //    this.setState({ location })
-        // let loc = Location.getCurrentPositionAsync({ enableHighAccuracy: true })
-        // let location = JSON.stringify(loc)
-        // console.log(loc)
-        // console.log(location)
+      //  console.log(this.state.data.location)
+        console.log('hi',geocode[0].postalCode)
+        Pincode = geocode[0].postalCode
         uid = firebase.auth().currentUser.uid
         const photo= this.props.navigation.getParam('photo') 
-     //   const location= this.props.navigation.getParam('loc') 
-
-    //    console.log(this.state.region.latitude)
-    //    let location = await Location.getCurrentPositionAsync({});
-      //  this.setState({ locationResult: JSON.stringify(location), location, });
-        
-        // console.log('first',this.state.location)
-        // console.log('sec',this.state.locationResult)
-        // console.log(this.state.locationResult)
-
-
-        // //console.log(loc)
-        // let location = JSON.stringify(loc);
-        // console.log(location[4])
-
-        // //console.log(location['Promise'])
-        // //let minutesWriting = myObj['meta']['minutesWriting']
-     
+        console.log(photo)
         weed = photo.width/photo.height
         this.setState({ 
           imageclick: photo.uri,
           lat,
           lon
-      
          })
 
-         
+         var today = new Date();
+         const fileExtension = this.state.imageclick.split('.').pop();
+         const fileName = `${today}.${fileExtension}`;
+          if(this.state.imageclick){
+            this.uploadImage(this.state.imageclick, fileName)
+            .then(() => {
+              Alert.alert('pushed to storage')
+           //   this.setState({ uploaded:true})
+
+            })
+            .catch((error) => {
+              Alert.alert(error)
+            })
+          }
+      }
+
+      uploadImage = async (uri, imageName) => {
+        const responce = await fetch(uri)
+        const blob =await responce.blob()
+        var ref = firebase.storage().ref().child(uid+ '/' + imageName)
+        await this.uplodimg(ref, blob)
+        link = await this.getlink(ref)
+       // this.setState({ imageclick: link })
+        console.log(link)
+      } 
+      uplodimg = async ( ref, blob) => {
+        return ref.put(blob).then( () =>{
+          console.log('updated')
+        })
+      }
+      getlink = async ( ref ) => {
+
+       return ref.getDownloadURL()
+      
+
       }
 
 
@@ -91,37 +107,32 @@ export default class DisplayScreen extends React.Component {
       };
 
   submitButt = async () => {
-    //   var today = new Date();
-    //   const fileExtension = this.state.imageclick.split('.').pop();
-    //   // console.log("EXT: " + fileExtension);
-    //   const fileName = `${today}.${fileExtension}`;
-    //   //console.log(fileName);
-    //  // const storageRef = firebase.storage().ref(`${uid}/images/${fileName}`);
-    //   //console.log(storageRef.putFile)
-    // //  storageRef.putFile(this.state.imageclick);
- 
-      if(this.state.imageclick){
-        this.uploadImage(this.state.imageclick, 'test-image')
-        .then(() => {
-          Alert.alert('uploaded')
-        })
-        .catch((error) => {
-          Alert.alert(error)
-        })
-      }
+    ToastAndroid.showWithGravityAndOffset(
+      "Reporting...",
+      ToastAndroid.LONG,
+      ToastAndroid.BOTTOM,
+      25,
+      50
+    )
+           console.log(Pincode)
+           console.log(LatLng)
+           console.log(link)
 
+           const data ={
+             code:Pincode,
+             location:LatLng,
+             photo:link
+           }
+      console.log(data)
+    firebase.database()
+      .ref('UsersList/' + uid + '/data/')
+      .push({
+        data
+      })
+      console.log('done')
+    
+      
  }
-
-//   uploadImage = async (uri, imageName) => {
-
-//     const responce = await fetch(uri)
-//     const blob =await responce.blob()
-
-//     var ref = firebase.storage().ref().child('images/'+ imageName)
-
-//     return ref.put(blob)
-//  }
-
 
 
 
@@ -168,6 +179,8 @@ export default class DisplayScreen extends React.Component {
           /> */}
                
                 <Button onPress={() => this.submitButt() } ><Text>submit</Text></Button>
+                <Button onPress={() =>this.props.navigation.navigate('App')} ><Text>back</Text></Button>
+
                 </Block>
             </Block>
         );
