@@ -68,12 +68,12 @@ const AuthStack = createStackNavigator({
     Login: LoginScreen,
     Register: RegisterScreen
 }) 
-const SubmitStack = createStackNavigator({
-    cam:CameraScreen,
-})
-const DoneStack = createStackNavigator({ 
-    done:DisplayScreen
-}) 
+// const SubmitStack = createStackNavigator({
+//     cam:CameraScreen,
+// })
+// const DoneStack = createStackNavigator({ 
+//     done:DisplayScreen
+// }) 
 
 const Container = createAppContainer(
 
@@ -82,8 +82,8 @@ const Container = createAppContainer(
             Loading: LoadingScreen,
             Auth: AuthStack,
             App: AppTabNavigator,
-            Submit:SubmitStack,
-            show:DoneStack
+            Submit:CameraScreen,
+            Show:DisplayScreen
             
         },
         {

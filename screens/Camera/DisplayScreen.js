@@ -1,15 +1,18 @@
-import React from "react";
-import { Dimensions,View, Image, StyleSheet, LayoutAnimation, Alert,ToastAndroid } from "react-native";
-import { Block, Button, Text, theme } from 'galio-framework'
-import storage from '@react-native-firebase/storage';
-import { utils } from '@react-native-firebase/app';
+import React from "react" 
+import { Animated,Dimensions,View,TextInput, Picker, Image, StyleSheet, LayoutAnimation, Alert,ToastAndroid } from "react-native" 
+
+import { Button, Block, Text, Input } from "../../components" 
+import { theme } from "../../constants" 
+
+import storage from '@react-native-firebase/storage' 
+import { utils } from '@react-native-firebase/app' 
 import firebase from '../../firebase'
 import Constants from 'expo-constants'
-//import MapView from 'expo';
-import MapView from 'react-native-maps';
-import { Marker } from 'react-native-maps';
+//import MapView from 'expo' 
+import MapView from 'react-native-maps' 
+import { Marker } from 'react-native-maps' 
 import * as Location from 'expo-location'
-const { width, height } = Dimensions.get('screen');
+const { width, height } = Dimensions.get('screen') 
 
 let Pincode
 let link
@@ -23,16 +26,18 @@ let LatLng = {
 export default class DisplayScreen extends React.Component {
   static navigationOptions = {
     headerShown: false
-  };
+  } 
 
   constructor(props) {
     super(props)
     this.state = {
         imageclick: null,   
-        lat:37,
-        lon:-122,
+        lat:null,
+        lon:null,
         uploaded:false,
-        data:null
+        type: null,
+        detail:null,
+   
       }
     }
     async componentDidMount () {
@@ -44,40 +49,21 @@ export default class DisplayScreen extends React.Component {
           latitude: lat,
           longitude: lon,
         }
-        let geocode = await Location.reverseGeocodeAsync(location.coords); 
-        // this.setState({ 
-        //   //this.state.data.Pincode: '234'
-        //  })
-
-      //  console.log(this.state.data.location)
+        let geocode = await Location.reverseGeocodeAsync(location.coords)
         console.log('hi',geocode[0].postalCode)
         Pincode = geocode[0].postalCode
         uid = firebase.auth().currentUser.uid
         const photo= this.props.navigation.getParam('photo') 
-        console.log(photo)
+     //   console.log(photo)
         weed = photo.width/photo.height
         this.setState({ 
           imageclick: photo.uri,
           lat,
           lon
          })
-
-         var today = new Date();
-         const fileExtension = this.state.imageclick.split('.').pop();
-         const fileName = `${today}.${fileExtension}`;
-          if(this.state.imageclick){
-            this.uploadImage(this.state.imageclick, fileName)
-            .then(() => {
-              Alert.alert('pushed to storage')
-           //   this.setState({ uploaded:true})
-
-            })
-            .catch((error) => {
-              Alert.alert(error)
-            })
-          }
       }
 
+ 
       uploadImage = async (uri, imageName) => {
         const responce = await fetch(uri)
         const blob =await responce.blob()
@@ -102,33 +88,49 @@ export default class DisplayScreen extends React.Component {
 
       
 
-      _handleMapRegionChange = mapRegion => {
-        this.setState({ mapRegion });
-      };
 
   submitButt = async () => {
     ToastAndroid.showWithGravityAndOffset(
-      "Reporting...",
+      "Uploading Image...",
       ToastAndroid.LONG,
       ToastAndroid.BOTTOM,
       25,
       50
     )
+    //console.log(this.state.type)
+    
+    var today = new Date() 
+    const fileExtension = this.state.imageclick.split('.').pop() 
+    const fileName = `${today}.${fileExtension}` 
+    // if(this.state.imageclick){
+    //   this.uploadImage(this.state.imageclick, fileName)
+    //   .then(() => {
+    //     Alert.alert('pushed to storage')
+    //  //   this.setState({ uploaded:true})
+
+    //   })
+    //   .catch((error) => {
+    //     Alert.alert(error)
+    //   })
+    // }
            console.log(Pincode)
            console.log(LatLng)
            console.log(link)
 
            const data ={
+
              code:Pincode,
              location:LatLng,
-             photo:link
+             photo:link,
+             Type:this.state.type,
+             Details:this.state.detail
            }
       console.log(data)
-    firebase.database()
-      .ref('UsersList/' + uid + '/data/')
-      .push({
-        data
-      })
+    // firebase.database()
+    //   .ref('UsersList/' + uid + '/data/')
+    //   .push({
+    //     data
+    //   })
       console.log('done')
     
       
@@ -137,58 +139,103 @@ export default class DisplayScreen extends React.Component {
 
 
     render() {
-        LayoutAnimation.easeInEaseOut();
+        LayoutAnimation.easeInEaseOut() 
         const item = this.state.imageclick
         return (
-            <Block >
-                <Block center style={{ margin:10,marginTop:Constants.statusBarHeight + 10, width:width, height:height, paddingHorizontal:50 }}>
-                  <Image style={{ aspectRatio: weed, width: '100%', height: undefined, borderWidth:5,borderColor:'#b1b1b1'}} 
-                  source={{ uri: item }} />
-                  <Text>hi</Text>
-                  <Block
+            <Block row >
+                <Block column center
+                  style={{ 
+                    marginVertical:Constants.statusBarHeight, 
+                    position:'relative',
+                    width:width, 
+                    height:height, 
+                    paddingHorizontal:50 
+                  }}>
+                  <Block row center middle>
+                    <Image 
+                      style={{ 
+                        aspectRatio: weed, 
+                        width: '50%', 
+                        height: undefined, 
+                      // paddingHorizontal:30,
+                        borderRadius:5,
+                        borderWidth:2,
+                        borderColor: theme.colors.gray2,
+                      }} 
+                      source={{ uri: item }} />
+                  </Block>
+
+                  <Block row middle center  
+                    //style={{marginVertical:50}}
+                    >
+                    <Text  bold h2>Type:</Text>
+                    <Picker
+                      selectedValue={this.state.type}
+                      style={{ height: 50, width: 150 }}
+                      onValueChange={type => this.setState({ type })}
+                    >
+                      <Picker.MODE_DIALOG label="Select type" />
+                      <Picker.Item label="Garbage" value="Garbage" />
+                      <Picker.Item label="Potholes" value="Potholes" />
+                      <Picker.Item label="Dead Animals" value="Animals" />
+                    </Picker>
+                  </Block>
+
+                  <Block row >
+                    <Input
+                      label={'Details (Optional)'}
+                      multiline={true}
+                      style={[styles.input]}
+                     
+                      numberOfLines={4}
+                      onChangeText={(detail) => this.setState({detail})}
+                      value={this.state.detail}/>
+
+                  </Block>
+{/* 
+                  <Block row 
                     style={{
                       height:1,
                       width:width*0.8,
                       borderBottomColor: '#b1b1b1',
                       borderBottomWidth: 1,
                     }}
-                  />
-                  {/* <Text> Loc: {this.state.loc}</Text> */}
-                  {/* <MapView style={{ width:200, height:200 }} 
-                //    region={this.state.location}
                   /> */}
-{/* 
 
-                  {console.log('first',this.state.location)}
-                  {console.log('sec',this.state.locationResult)} */}
-        <MapView
-          style={{ alignSelf: 'stretch', height: 200 }}
-          region={{ latitude: this.state.lat, longitude: this.state.lon, latitudeDelta: 0.01, longitudeDelta: 0.01 }}
-          //onRegionChange={this._handleMapRegionChange}
-        >
-        <Marker
-      coordinate={LatLng}
-      title="hi"
-      description="dis"
-    />
-        </MapView>
-        {/* <MapView
-            coordinate={this.state.location.coords}
-            title="My Marker"
-            description="Some description"
-          /> */}
-               
-                <Button onPress={() => this.submitButt() } ><Text>submit</Text></Button>
-                <Button onPress={() =>this.props.navigation.navigate('App')} ><Text>back</Text></Button>
-
+           
+                <MapView
+                  style={{ alignSelf: 'center', height: height*0.2,width:width*0.5 }}
+                  region={{ latitude: this.state.lat, longitude: this.state.lon, latitudeDelta: 0.01, longitudeDelta: 0.01 }}
+                >
+                  <Marker
+                    coordinate={LatLng}
+                    title="Your Location"
+                  //  description=""
+                  />
+                </MapView>
+             {/*file upload delay
+             select type required before pushing to database*/}
+                <Block row middle >
+                <Button gradient style={{width:width*0.5,marginVertical:20}} onPress={() => this.submitButt() } >
+                  <Text center semibold>submit</Text>
+                  </Button>
+                {/* <Button onPress={() =>this.props.navigation.navigate('App')} ><Text>back</Text></Button> */}
+                </Block>
                 </Block>
             </Block>
-        );
+        ) 
     }
 }
 
 const styles = StyleSheet.create({
-   
+  input: {
+    marginVertical:10,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: theme.colors.gray2,
+    height: height*0.1,
+    width:width*0.6, 
+  },
     // button: {
     //     top: 100,
     //     marginHorizontal: 30,
@@ -197,4 +244,4 @@ const styles = StyleSheet.create({
     //     height: 52,
     //     width: 100,
     // }
-});
+}) 
