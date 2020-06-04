@@ -36,7 +36,8 @@ export default class DisplayScreen extends React.Component {
         lon:null,
         uploaded:false,
         type: null,
-        detail:null,
+        detail:'',
+        data: [],
    
       }
     }
@@ -90,50 +91,70 @@ export default class DisplayScreen extends React.Component {
 
 
   submitButt = async () => {
-    ToastAndroid.showWithGravityAndOffset(
-      "Uploading Image...",
-      ToastAndroid.LONG,
-      ToastAndroid.BOTTOM,
-      25,
-      50
-    )
+    // if(this.state.type==undefined){
+    //   Alert.alert('Select Type')
+    // }
+    // else{
+       // ToastAndroid.showWithGravityAndOffset(
+    //   "Reporting...",
+    //   ToastAndroid.LONG,
+    //   ToastAndroid.BOTTOM,
+    //   25,
+    //   50
+    // )
     //console.log(this.state.type)
     
     var today = new Date() 
     const fileExtension = this.state.imageclick.split('.').pop() 
     const fileName = `${today}.${fileExtension}` 
     // if(this.state.imageclick){
-    //   this.uploadImage(this.state.imageclick, fileName)
+    //   await this.uploadImage(this.state.imageclick, fileName)
     //   .then(() => {
     //     Alert.alert('pushed to storage')
-    //  //   this.setState({ uploaded:true})
+        const data ={
+          code:Pincode,
+          location:LatLng,
+          photo:link,
+          Type:this.state.type,
+          Details:this.state.detail
+        }
+       
+        firebase.database()
+          .ref("UsersList/" + uid + "/data/")
+          .once("value", (snapshot) => {
+           
+            console.log(snapshot.val())
+            if(snapshot.val()=== ''){
+              console.log('ASDFGHJK')
+              this.setState({ data: data });
+            }else{
+              console.log('hello')
+              
+              this.setState({ data: snapshot.val() });
+           //   this.state.data.push(data);
+            }
+           
+          //  console.log(this.state.data)
+            console.log('hi')
 
-    //   })
+        // firebase.database()
+        // .ref('UsersList/' + uid )
+        // .update({
+        //   data:this.state.data
+        // }).then(() => {
+        //   this.props.navigation.navigate('App')
+         
+        //  })
+
+      })
+
+      // })
     //   .catch((error) => {
     //     Alert.alert(error)
     //   })
     // }
-           console.log(Pincode)
-           console.log(LatLng)
-           console.log(link)
 
-           const data ={
-
-             code:Pincode,
-             location:LatLng,
-             photo:link,
-             Type:this.state.type,
-             Details:this.state.detail
-           }
-      console.log(data)
-    // firebase.database()
-    //   .ref('UsersList/' + uid + '/data/')
-    //   .push({
-    //     data
-    //   })
-      console.log('done')
-    
-      
+    // } 
  }
 
 
@@ -219,7 +240,7 @@ export default class DisplayScreen extends React.Component {
                 <Button gradient style={{width:width*0.5,marginVertical:20}} onPress={() => this.submitButt() } >
                   <Text center semibold>submit</Text>
                   </Button>
-                {/* <Button onPress={() =>this.props.navigation.navigate('App')} ><Text>back</Text></Button> */}
+                <Button onPress={() =>this.props.navigation.navigate('App')} ><Text>back</Text></Button>
                 </Block>
                 </Block>
             </Block>

@@ -29,7 +29,7 @@ export default class SignUp extends Component {
     })
     let name=this.state.name
     let email=this.state.email
-    let data= "new"
+    let data= ''
       Firebase
           .auth()
           .createUserWithEmailAndPassword(this.state.email, this.state.password)
