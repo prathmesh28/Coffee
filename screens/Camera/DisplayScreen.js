@@ -104,49 +104,60 @@ export default class DisplayScreen extends React.Component {
     // )
     //console.log(this.state.type)
     
-    var today = new Date() 
-    const fileExtension = this.state.imageclick.split('.').pop() 
-    const fileName = `${today}.${fileExtension}` 
+    // var today = new Date() 
+    // const fileExtension = this.state.imageclick.split('.').pop() 
+    // const fileName = `${today}.${fileExtension}` 
     // if(this.state.imageclick){
     //   await this.uploadImage(this.state.imageclick, fileName)
     //   .then(() => {
     //     Alert.alert('pushed to storage')
-        const data ={
-          code:Pincode,
-          location:LatLng,
-          photo:link,
-          Type:this.state.type,
-          Details:this.state.detail
-        }
+        //  let data ={
+        //   code:Pincode,
+        //   location:LatLng,
+        // //  photo:link,
+        //   Type:this.state.type,
+        //   Details:this.state.detail
+        // }
        
-        firebase.database()
-          .ref("UsersList/" + uid + "/data/")
-          .once("value", (snapshot) => {
+        // firebase.database()
+        //   .ref("UsersList/" + uid + "/data/")
+        //   .once("value", (snapshot) => {
            
-            console.log(snapshot.val())
-            if(snapshot.val()=== ''){
-              console.log('ASDFGHJK')
-              this.setState({ data: data });
-            }else{
-              console.log('hello')
-              
-              this.setState({ data: snapshot.val() });
-           //   this.state.data.push(data);
-            }
+        //     console.log(snapshot.val())
+        //     if(snapshot.val()=== ''){
+        //       console.log('ASDFGHJK')
+        //       this.setState({ data: data });
+        //     }else{
+        //       console.log('hello')
+
+        //       this.setState({ data: snapshot.val() });
+        //    //   this.state.data.push(data);
+        //     }
            
           //  console.log(this.state.data)
-            console.log('hi')
-
+     //     await this.setState({ data})
+     //        console.log(this.state.data)
+         //   console.log('hi')
+            // console.log(data)
+            let data ={
+              code:Pincode,
+              location:LatLng,
+            //  photo:link,
+              Type:this.state.type,
+              Details:this.state.detail
+            }
+             firebase.database().ref('UserData/').set({ data })
+             .then(() => console.log('Data set.'));
         // firebase.database()
-        // .ref('UsersList/' + uid )
-        // .update({
-        //   data:this.state.data
+        // .ref('UserData/')
+        // .set({
+        //   data
         // }).then(() => {
         //   this.props.navigation.navigate('App')
          
         //  })
 
-      })
+     // })
 
       // })
     //   .catch((error) => {
