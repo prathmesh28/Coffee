@@ -6,7 +6,9 @@ const { width, height } = Dimensions.get('screen');
 import { MaterialCommunityIcons, AntDesign } from '@expo/vector-icons'; 
 import Constants from 'expo-constants'
 import * as Location from 'expo-location'
-import Modal from 'react-native-modal';
+import Modal from 'react-native-modal'
+import Loader from '../Loader'
+
 export default class CameraScreen extends React.Component {
   static navigationOptions = {
     headerShown: false
@@ -20,7 +22,8 @@ export default class CameraScreen extends React.Component {
         "uri": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540prthmsh18%252Fcoffee/Camera/53ae5628-6eb2-402a-881f-3dc8741d2f0e.jpg",
         "width": 3000,
       },
-      isModalVisible:false
+      isModalVisible:false,
+      loading: false,
       }
     }
 
@@ -47,11 +50,19 @@ export default class CameraScreen extends React.Component {
             { cancelable: false }
           );
         }
-        
+      //   const ratios = await this.Camera!.getSupportedRatiosAsync();
+      // //  const [ratio, dimensions] = pickRatio_calcDimensions(ratios);
+      // //  console.log({ ratios, ratio });
+      //   const sizes = await this.Camera!.getAvailablePictureSizesAsync(ratio)
+
     }
+    
 
       //button click
     takePicture = () => {
+      this.setState({
+        loading: true
+      })
       if (this.camera) {
           this.camera.takePictureAsync({ onPictureSaved: this.onPictureSaved.bind(this) });
          
@@ -65,65 +76,81 @@ export default class CameraScreen extends React.Component {
       this.setState({ photo})
       this.camera.pausePreview()
      // Camera.pausePreview()
-      this.setState({isModalVisible: !this.state.isModalVisible});
+      this.setState({loading: false, isModalVisible: !this.state.isModalVisible});
      //   this.props.navigation.navigate('Show', { photo: photo })
     }
 
     render() {
       return (
          <View style={{ flex: 1, backgroundColor:'black',alignItems:"center",justifyContent:"center" }}>
-           <StatusBar 
-              translucent={true} 
-            />
-          <Camera style={{ marginTop:Constants.statusBarHeight,width:width*0.9,height:height*0.9
-          
-           }} type={Camera.Constants.Type.back} ref={(ref) => { this.camera = ref }} >
-
-             <View style={{flex: 1}}>
-            
-              <Modal isVisible={this.state.isModalVisible}>
-              <View
-              style={{
-                padding:20,
-                alignItems:"center",
-              }}>
-                
-                <Image style={{ aspectRatio: this.state.photo.width/this.state.photo.height,  width: '100%', height: undefined, borderWidth:5,borderColor:'#b1b1b1'}} 
-                  source={{ uri: this.state.photo.uri }} />
+           <StatusBar translucent={true} />
+           <Loader loading={this.state.loading} />
+            <Camera style={{ 
+              flex:1,
+              marginTop:Constants.statusBarHeight,
+                width:width,
+                height:height
+              }} 
+                autoFocus={Camera.Constants.AutoFocus.on}
+                whiteBalance={Camera.Constants.WhiteBalance.auto}
+              
+              //  pictureSize={pictureSize}
+                type={Camera.Constants.Type.back} 
+                ref={(ref) => { this.camera = ref }}
+                onCameraReady={this.updateStateForCameraProps} >
+                  
+              <View style={{flex: 1}}>
+                <Modal isVisible={this.state.isModalVisible}>
                   <View
-              style={{
-               // width: width-20,
-                position: 'relative',
-                padding:20,
-                bottom:0,
-                display:"flex",
-                flexDirection:"row",
-                alignItems:"center",
-              }}>
-                <TouchableOpacity style={{marginHorizontal:30}} onPress={() =>this.props.navigation.navigate('App')}>
-                  <AntDesign name="delete" size={34} color="white" />
-                </TouchableOpacity>
-                <TouchableOpacity style={{marginHorizontal:30}} onPress={()=>this.props.navigation.navigate('Show', { photo: this.state.photo }) }>
-                <MaterialCommunityIcons name="page-next-outline" size={34} color="white" />
-                </TouchableOpacity>
-                </View>
-                </View>
-              </Modal>
-            </View>
+                    style={{
+                      padding:20,
+                      alignItems:"center",
+                    }}>
+                    <Image style={{ aspectRatio: this.state.photo.width/this.state.photo.height,  
+                        width: '100%', 
+                        height: undefined, 
+                        borderWidth:5,
+                        borderColor:'#b1b1b1'}} 
+                      source={{ uri: this.state.photo.uri }} />
+                    <View
+                      style={{
+                      // width: width-20,
+                        position: 'relative',
+                        padding:20,
+                        bottom:0,
+                        display:"flex",
+                        flexDirection:"row",
+                        alignItems:"center",
+                      }}>
+                      <TouchableOpacity style={{marginHorizontal:30}} 
+                        onPress={() =>{
+                          this.setState({photo:null})
+                          this.props.navigation.navigate('App')
+                          }}>
+                        <AntDesign name="delete" size={34} color="white" />
+                      </TouchableOpacity>
+                      <TouchableOpacity style={{marginHorizontal:30}} 
+                        onPress={()=>this.props.navigation.navigate('Show', { photo: this.state.photo }) }>
+                        <MaterialCommunityIcons name="page-next-outline" size={34} color="white" />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </Modal>
+              </View>
 
-            <View
-              style={{
-                width: width-20,
-                position: 'absolute',
-                height: 80,
-                bottom: 0,
-                padding:20,
-                backgroundColor:'transparent',
-               // backgroundColor:'black',
-                display:"flex",
-                flexDirection:"row",
-                alignItems:"center",
-              }}>
+              <View
+                style={{
+                  width: width-20,
+                  position: 'absolute',
+                  height: 80,
+                  bottom: 0,
+                  padding:20,
+                  backgroundColor:'transparent',
+                // backgroundColor:'black',
+                  display:"flex",
+                  flexDirection:"row",
+                  alignItems:"center",
+                }}>
                 <TouchableOpacity style={{flex:0.45}} onPress={() =>this.props.navigation.navigate('App')}>
                   <AntDesign name="back" size={34} color="white" />
                 </TouchableOpacity>

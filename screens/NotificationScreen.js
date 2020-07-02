@@ -1,10 +1,12 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet,StatusBar } from "react-native";
 
 export default class NotificationScreen extends React.Component {
     render() {
         return (
             <View style={styles.container}>
+                                <StatusBar translucent={true} />
+
                 <Text>Notification Screen</Text>
             </View>
         );

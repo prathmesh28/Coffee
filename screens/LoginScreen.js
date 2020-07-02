@@ -12,6 +12,8 @@ import {
   StyleSheet,
   View
 } from "react-native"  
+import Loader from './Loader'
+
 import { Button, Block, Input, Text } from "../components"  
 import { theme } from "../constants"  
 const { height, width } = Dimensions.get('screen')  
@@ -47,6 +49,9 @@ export default class Login extends Component {
   }
 
   handleLogin = () => {
+    this.setState({
+      loading: true
+    })
     const { email, password } = this.state  
 
     Firebase
@@ -54,6 +59,11 @@ export default class Login extends Component {
       .signInWithEmailAndPassword(email, password)
       .catch(error => this.setState({ errorMessage: error.message }))  
     AsyncStorage.setItem('email', email)  
+      setTimeout(() => {
+      this.setState({
+        loading: false,
+      }) 
+    }, 500) 
   }  
 
   render() {
@@ -62,11 +72,9 @@ export default class Login extends Component {
     <SafeAreaView style={styles.container}>
       <Block  style={styles.signup} >
         <StatusBar  />
+        <Loader loading={this.state.loading} />
         <Modal isVisible={this.state.pass} onBackdropPress={() => this.setState({pass: false})}>
           <View  style={styles.activityIndicatorWrapper} >
-         
-           
-         
                 <Text bold title>
                   Reset Password
                 </Text>

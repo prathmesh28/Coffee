@@ -1,33 +1,39 @@
 import React from "react";
-import { StyleSheet, LayoutAnimation } from "react-native";
+import { StyleSheet, LayoutAnimation, Dimensions, TouchableOpacity, StatusBar, ImageBackground } from "react-native";
 import { Block, theme } from 'galio-framework'
 import { Avatar,Text, Button, Card, Title, Paragraph } from 'react-native-paper';
+import { MaterialIcons } from '@expo/vector-icons'; 
 import Firebase from '../firebase';
+const { height, width } = Dimensions.get('screen')  
+const image =  require("../assets/backgrenn.jpg") 
+
 export default class HomeScreen extends React.Component {
     state = { email: "", displayName: "" };
     componentDidMount() {
         const { email, displayName } = Firebase.auth().currentUser;
         this.setState({ email, displayName });
+        
     }
+    //marginTop:Constants.statusBarHeight
     render() {
         LayoutAnimation.easeInEaseOut();
         return (
             <Block flex>
-                
+                <StatusBar translucent={true}  backgroundColor={'transparent'} />
 
-                <Card style={{
-                    marginTop:100,
-                    alignSelf:'center',
-                    width:200,
-                    }}
-                    onPress={() =>this.props.navigation.navigate('Submit')}
-                     >
-                    <Card.Content style={{backgroundColor:'#32CD32', borderRadius:10}}>
-                    <Button icon="camera" color={'black'}>
-                        Report
-                    </Button>
+                <ImageBackground source={image} style={{ flex: 1, resizeMode: "cover",}}>
+    
+                <Card style={{marginTop:100, width:width*0.8,alignSelf:"center",justifyContent:"center", alignItems:"center"}}>
+                    <Card.Content>
+                   <TouchableOpacity style={{alignSelf:"center",alignItems:"center"}}
+                    onPress={() =>this.props.navigation.navigate('Submit')}>
+                    <MaterialIcons name="location-searching" size={44} color="black" />
+                <Title>Report</Title>
+                </TouchableOpacity>
                     </Card.Content>
-                </Card>  
+                </Card> 
+
+                </ImageBackground>
                 </Block>
         );
     }

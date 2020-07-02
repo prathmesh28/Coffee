@@ -13,7 +13,7 @@ import Firebase from '../firebase'
 import { Button, Block, Input, Text } from "../components" 
 import { theme } from "../constants" 
 const { height, width } = Dimensions.get('screen') 
-
+import Loader from './Loader'
 export default class SignUp extends Component {
   static navigationOptions = {
     headerShown: false
@@ -29,7 +29,7 @@ export default class SignUp extends Component {
     })
     let name=this.state.name
     let email=this.state.email
-    let data= ''
+    
       Firebase
           .auth()
           .createUserWithEmailAndPassword(this.state.email, this.state.password)
@@ -38,7 +38,6 @@ export default class SignUp extends Component {
             Firebase.database().ref('UsersList/' + userCredentials.user.uid).set({
                 name,
                 email,
-                data,
             }).then((data)=>{          
             setTimeout(() => {
               this.setState({
@@ -55,11 +54,11 @@ export default class SignUp extends Component {
           .catch(error => this.setState({ errorMessage: error.message })) 
     AsyncStorage.setItem('email', this.state.email, () => {
     })
-    setTimeout(() => {
-      this.setState({
-        loading: false,
-      }) 
-    }, 500) 
+    // setTimeout(() => {
+    //   this.setState({
+    //     loading: false,
+    //   }) 
+    // }, 500) 
         
   } 
   render() {
@@ -67,6 +66,7 @@ export default class SignUp extends Component {
     <SafeAreaView style={styles.container}>
       <Block  style={styles.signup} >
         <StatusBar  />
+        <Loader loading={this.state.loading} />
         <Block shadow style={{ top:7,width:width, position:'absolute',}}>
           <Ionicons style={{margin:20}}  name="ios-arrow-back" size={24} color="black" onPress={() =>this.props.navigation.navigate('Start')} />
           <Button  style={{width:80,margin:10,right:5,position:'absolute'}}  onPress={() =>this.props.navigation.navigate('Login')}>

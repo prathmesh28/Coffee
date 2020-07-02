@@ -1,8 +1,10 @@
 import React from "react" 
-import { Animated,Dimensions,View,TextInput, Picker, Image, StyleSheet, LayoutAnimation, Alert,ToastAndroid } from "react-native" 
-
-import { Button, Block, Text, Input } from "../../components" 
+import { Animated,Dimensions,View,TextInput, Picker, Image, StyleSheet, LayoutAnimation, Alert,ToastAndroid,Modal } from "react-native" 
+//import Card from 'react-native-paper'
+import { Button, Block, Text, Input, Divider } from "../../components" 
 import { theme } from "../../constants" 
+import Loader from '../Loader'
+import LottieView from 'lottie-react-native';
 
 import storage from '@react-native-firebase/storage' 
 import { utils } from '@react-native-firebase/app' 
@@ -12,6 +14,7 @@ import Constants from 'expo-constants'
 import MapView from 'react-native-maps' 
 import { Marker } from 'react-native-maps' 
 import * as Location from 'expo-location'
+import AnimatedLoader from "react-native-animated-loader";
 const { width, height } = Dimensions.get('screen') 
 
 let Pincode
@@ -22,7 +25,7 @@ let LatLng = {
   latitude: 37,
   longitude: -122,
 }
-
+let address
 export default class DisplayScreen extends React.Component {
   static navigationOptions = {
     headerShown: false
@@ -38,33 +41,47 @@ export default class DisplayScreen extends React.Component {
         type: null,
         detail:'',
         data: [],
-   
+        date: null,
+        loading: false,
+        pass: false
       }
     }
     async componentDidMount () {
-     
-        let location = await Location.getCurrentPositionAsync({  })
-        let lat = location.coords.latitude
-        let lon = location.coords.longitude
-        LatLng =  {
-          latitude: lat,
-          longitude: lon,
-        }
-        let geocode = await Location.reverseGeocodeAsync(location.coords)
-        console.log('hi',geocode[0].postalCode)
-        Pincode = geocode[0].postalCode
-        uid = firebase.auth().currentUser.uid
-        const photo= this.props.navigation.getParam('photo') 
-     //   console.log(photo)
-        weed = photo.width/photo.height
-        this.setState({ 
-          imageclick: photo.uri,
-          lat,
-          lon
-         })
-      }
+      this.setState({
+        loading: true,
+      }) 
+      var today = new Date().toLocaleString()
+      this.setState({date: today})
 
- 
+      
+      let location = await Location.getCurrentPositionAsync({  })
+      let lat = location.coords.latitude
+      let lon = location.coords.longitude
+      LatLng =  {
+        latitude: lat,
+        longitude: lon,
+      }
+      let geocode = await Location.reverseGeocodeAsync(location.coords)
+      console.log('hi',geocode[0])
+      address = geocode[0].name + ', ' + geocode[0].city + ', ' + geocode[0].region + ', ' + geocode[0].country + ', ' + geocode[0].postalCode + '.'
+      console.log(address)
+      Pincode = geocode[0].postalCode
+      uid = firebase.auth().currentUser.uid
+      const photo= this.props.navigation.getParam('photo') 
+      weed = photo.width/photo.height
+      this.setState({ 
+        imageclick: photo.uri,
+        lat,
+        lon
+       })
+       setTimeout(() => {
+        this.setState({
+          loading: false,
+        }) 
+      }, 2000) 
+    } 
+
+    
       uploadImage = async (uri, imageName) => {
         const responce = await fetch(uri)
         const blob =await responce.blob()
@@ -91,90 +108,125 @@ export default class DisplayScreen extends React.Component {
 
 
   submitButt = async () => {
-    // if(this.state.type==undefined){
-    //   Alert.alert('Select Type')
-    // }
-    // else{
-       // ToastAndroid.showWithGravityAndOffset(
-    //   "Reporting...",
-    //   ToastAndroid.LONG,
-    //   ToastAndroid.BOTTOM,
-    //   25,
-    //   50
-    // )
-    //console.log(this.state.type)
+  //   if(this.state.type==undefined){
+  //     Alert.alert('Select Type')
+  //   }
+  //   else{
+  //      ToastAndroid.showWithGravityAndOffset(
+  //         "Reporting...",
+  //         ToastAndroid.LONG,
+  //         ToastAndroid.BOTTOM,
+  //         25,
+  //         50 )
+  //     console.log(this.state.type)
     
-    // var today = new Date() 
-    // const fileExtension = this.state.imageclick.split('.').pop() 
-    // const fileName = `${today}.${fileExtension}` 
-    // if(this.state.imageclick){
+    
+  //   var today = new Date() 
+  //   const fileExtension = this.state.imageclick.split('.').pop() 
+  //   const fileName = `${today}.${fileExtension}` 
+  //  if(this.state.imageclick){
+    this.setState({pass: true});
+    //  
     //   await this.uploadImage(this.state.imageclick, fileName)
+
     //   .then(() => {
-    //     Alert.alert('pushed to storage')
-        //  let data ={
-        //   code:Pincode,
-        //   location:LatLng,
-        // //  photo:link,
-        //   Type:this.state.type,
-        //   Details:this.state.detail
-        // }
-       
-        // firebase.database()
-        //   .ref("UsersList/" + uid + "/data/")
-        //   .once("value", (snapshot) => {
-           
-        //     console.log(snapshot.val())
-        //     if(snapshot.val()=== ''){
-        //       console.log('ASDFGHJK')
-        //       this.setState({ data: data });
-        //     }else{
-        //       console.log('hello')
-
-        //       this.setState({ data: snapshot.val() });
-        //    //   this.state.data.push(data);
-        //     }
-           
-          //  console.log(this.state.data)
-     //     await this.setState({ data})
-     //        console.log(this.state.data)
-         //   console.log('hi')
-            // console.log(data)
-            let data ={
-              code:Pincode,
-              location:LatLng,
-            //  photo:link,
-              Type:this.state.type,
-              Details:this.state.detail
-            }
-             firebase.database().ref('UserData/').set({ data })
-             .then(() => console.log('Data set.'));
-        // firebase.database()
-        // .ref('UserData/')
-        // .set({
-        //   data
-        // }).then(() => {
-        //   this.props.navigation.navigate('App')
+    //      Alert.alert('pushed to storage')
+    //       let data ={
+    //         email: firebase.auth().currentUser.email,
+    //         code:Pincode,
+    //         location:LatLng,
+    //         date:this.state.date,
+            
+    //         photo:link,
+    //         Type:this.state.type,
+    //         Details:this.state.detail
+    //       }
+    //       console.log(data)
+    //       console.log(this.state.date)
+    //         firebase.database().ref('UserData/').push({ data })
+    //         .then(() => console.log('Data set.'));
          
-        //  })
 
-     // })
-
-      // })
-    //   .catch((error) => {
-    //     Alert.alert(error)
-    //   })
+    //     })
+    //     .catch((error) => {
+    //       Alert.alert(error)
+    //     })
     // }
 
     // } 
- }
 
 
+  }
 
     render() {
         LayoutAnimation.easeInEaseOut() 
         const item = this.state.imageclick
         return (
-            <Block row >
+          <Block styles={{flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            }}>
+
+  
+{/* <Modal 
+      transparent={true}
+        visible={true} >
+                <View center style={{
+                  width:width*0.7,height:height*0.5,backgroundColor:'#fff',
+                  justifyContent:'center',alignSelf:'center',alignItems: "center",
+                
+                  }}>
+                            
+              <Text body style={{ textAlign: "center"}}>Your complaint will be registered.
+Thank you for helping make our city a better place.</Text>
+             <Button gradient style={{width:width*0.5,alignSelf:'center'}} >
+                  <Text center semibold>Back to Home</Text>
+              </Button>
+           
+        </View> 
+     
+                  
+              </Modal> */}
+      <Loader loading={this.state.loading} />
+    
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={this.state.pass}
+      >
+        <View style={{ flex: 1,
+              backgroundColor:'rgba(0,0,0,0.65)',
+          justifyContent: "center",
+          alignItems: "center"}}>
+        <View style={{margin: 20,
+            backgroundColor: "white",
+            borderRadius: 20,
+            padding: 35,
+            alignItems: "center",
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 2
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 5}}>
+           
+
+            <LottieView source={require('../../assets/tick.json')} autoPlay loop={false}
+              style={{width:100,height:100}} />
+               <Text h1 bold>Success!</Text>
+            <Text body  style={{ textAlign: "center",margin:10}}>Your complaint will be registered.{'\n'}
+Thank you for helping make our city a better place.</Text>
+             <Button gradient style={{width:width*0.5,alignSelf:'center'}} onPress={() => this.props.navigation.navigate('App')}>
+                  <Text center semibold>Back to Home</Text>
+              </Button>
+
+          </View>
+        </View>
+      </Modal>
+
+              <Block row >
                 <Block column center
                   style={{ 
                     marginVertical:Constants.statusBarHeight, 
@@ -183,27 +235,30 @@ export default class DisplayScreen extends React.Component {
                     height:height, 
                     paddingHorizontal:50 
                   }}>
-                  <Block row center middle>
+                    
+                  <View  style={{width:width*0.9,height:height*0.25,alignItems:'center'}}>
                     <Image 
                       style={{ 
                         aspectRatio: weed, 
-                        width: '50%', 
-                        height: undefined, 
+                        width: '100%', 
+                        height: '100%', 
                       // paddingHorizontal:30,
                         borderRadius:5,
-                        borderWidth:2,
-                        borderColor: theme.colors.gray2,
+                        borderWidth:1,
+                        borderColor: theme.colors.primary,
                       }} 
                       source={{ uri: item }} />
-                  </Block>
+                  </View>
+             <View style={{width:width*0.9,height:1,backgroundColor:'#808088',marginVertical:10}}/>
 
-                  <Block row middle center  
-                    //style={{marginVertical:50}}
+                  <View 
+                    style={{flexDirection: 'row', alignItems: 'center',width:width*0.8}}
                     >
-                    <Text  bold h2>Type:</Text>
+                    <Text black bold h2>Type:</Text>
+
                     <Picker
                       selectedValue={this.state.type}
-                      style={{ height: 50, width: 150 }}
+                      style={{ height: 50, width: 200,backgroundColor:'#fff' ,color:theme.colors.secondary }}
                       onValueChange={type => this.setState({ type })}
                     >
                       <Picker.MODE_DIALOG label="Select type" />
@@ -211,32 +266,33 @@ export default class DisplayScreen extends React.Component {
                       <Picker.Item label="Potholes" value="Potholes" />
                       <Picker.Item label="Dead Animals" value="Animals" />
                     </Picker>
-                  </Block>
+                  </View>
+                  <View style={{width:width*0.9,height:1,backgroundColor:'#808088',marginVertical:10}}/>
 
-                  <Block row >
+
+                  <View style={{width:width*0.8}} >
+                  <Text bold black>Details (Optional)</Text> 
                     <Input
-                      label={'Details (Optional)'}
                       multiline={true}
                       style={[styles.input]}
-                     
+               
                       numberOfLines={4}
                       onChangeText={(detail) => this.setState({detail})}
                       value={this.state.detail}/>
 
-                  </Block>
-{/* 
-                  <Block row 
-                    style={{
-                      height:1,
-                      width:width*0.8,
-                      borderBottomColor: '#b1b1b1',
-                      borderBottomWidth: 1,
-                    }}
-                  /> */}
+                  </View>
+                  <View style={{width:width*0.9,height:1,backgroundColor:'#808088',marginBottom:10}}/>
 
-           
+           {/* <Card style={{borderColor:'grey',width:width*0.9,borderWidth:1}}>
+            */}
+            <View style={{width:width*0.8}}>
+           <Text bold h3 black>Location:</Text>
+            <View style={{ width:width*0.8, marginTop:5, flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{ borderColor:theme.colors.primary, borderWidth:1,}}>
                 <MapView
-                  style={{ alignSelf: 'center', height: height*0.2,width:width*0.5 }}
+                  style={{ alignSelf: 'center', height: height*0.2,width:width*0.45,
+                 // left:0,bottom:0,margin:0,position:'absolute' 
+                }}
                   region={{ latitude: this.state.lat, longitude: this.state.lon, latitudeDelta: 0.01, longitudeDelta: 0.01 }}
                 >
                   <Marker
@@ -245,15 +301,24 @@ export default class DisplayScreen extends React.Component {
                   //  description=""
                   />
                 </MapView>
+                </View>
+                <Text bold secondary center style={{width:width*0.35,marginLeft:10}}>{address}</Text>
+              </View>
+                </View>
+
+
+
+                {/* </Card> */}
              {/*file upload delay
              select type required before pushing to database*/}
                 <Block row middle >
                 <Button gradient style={{width:width*0.5,marginVertical:20}} onPress={() => this.submitButt() } >
                   <Text center semibold>submit</Text>
                   </Button>
-                <Button onPress={() =>this.props.navigation.navigate('App')} ><Text>back</Text></Button>
+                {/* <Button onPress={() =>this.props.navigation.navigate('App')} ><Text>back</Text></Button> */}
                 </Block>
                 </Block>
+            </Block>
             </Block>
         ) 
     }
@@ -266,14 +331,27 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: theme.colors.gray2,
     height: height*0.1,
-    width:width*0.6, 
+    width:width*0.8, 
   },
-    // button: {
-    //     top: 100,
-    //     marginHorizontal: 30,
-    //     backgroundColor: "grey",
-    //     borderRadius: 4,
-    //     height: 52,
-    //     width: 100,
-    // }
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  
+  },
+  modalView: {
+    width:width*0.8,
+    height:height*0.7,
+    margin: 20,
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+   
+  },
+
+   lottie: {
+    width: 500,
+    height: 100
+  }
+ 
 }) 

@@ -3,6 +3,8 @@ import { createAppContainer, createSwitchNavigator } from "react-navigation"
 import { createStackNavigator } from "react-navigation-stack"
 import { createBottomTabNavigator } from "react-navigation-tabs"
 import { Ionicons } from "@expo/vector-icons"
+import { Fontisto } from '@expo/vector-icons'
+import { FontAwesome } from '@expo/vector-icons'
 import { Asset } from 'expo-asset';
 import { AppLoading } from 'expo';
 
@@ -32,33 +34,37 @@ const AppTabNavigator = createBottomTabNavigator(
         Home: {
             screen: HomeScreen,
             navigationOptions: {
-                tabBarIcon: ({ tintColor }) => <Ionicons name="ios-home" size={24} color={tintColor} />
+                tabBarIcon: ({ tintColor }) => <Ionicons name="ios-home" size={30} color={tintColor} />
             }
         },
-        Message: {
+        History: {
             screen: MessageScreen,
             navigationOptions: {
-                tabBarIcon: ({ tintColor }) => <Ionicons name="ios-list" size={24} color={tintColor} />
+                tabBarIcon: ({ tintColor }) => <FontAwesome name="history" size={30} color={tintColor} />
             }
         },
-        Notification: {
+        Dumps: {
             screen: NotificationScreen,
             navigationOptions: {
-                tabBarIcon: ({ tintColor }) => <Ionicons name="ios-notifications" size={24} color={tintColor} />
+              tabBarIcon: ({ tintColor }) => <Fontisto name="world" size={30} color={tintColor} />
             }
         },
         Profile: {
             screen: ProfileScreen,
             navigationOptions: {
-                tabBarIcon: ({ tintColor }) => <Ionicons name="ios-person" size={24} color={tintColor} />
+                tabBarIcon: ({ tintColor }) => <Ionicons name="ios-person" size={30} color={tintColor} />
             }
         }
     },
     {
         tabBarOptions: {
-            activeTintColor: "#161F3D",
-            inactiveTintColor: "#B8BBC4",
-            showLabel: false
+          
+            activeTintColor: "#208720",
+            inactiveTintColor: "#8d9096",
+            style:{height:60,paddingVertical:10}
+            
+            //showLabel: false,
+            
         }
     }
 ) 
@@ -99,6 +105,7 @@ class App extends React.Component {
         };
       }
     async _loadAssetsAsync() {
+      //if images taking time to load use this
         const imageAssets = cacheImages([require('./assets/login.jpg')])
     
         await Promise.all([...imageAssets]);

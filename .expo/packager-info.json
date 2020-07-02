@@ -2,9 +2,9 @@
   "devToolsPort": 19002,
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 9944,
-  "expoServerNgrokUrl": "https://7y-f2d.prthmsh18.coffee.exp.direct",
-  "packagerNgrokUrl": "https://packager.7y-f2d.prthmsh18.coffee.exp.direct",
-  "ngrokPid": 10856,
+  "packagerPid": 11072,
+  "expoServerNgrokUrl": "https://7y-f2d.anonymous.coffee.exp.direct",
+  "packagerNgrokUrl": "https://packager.7y-f2d.anonymous.coffee.exp.direct",
+  "ngrokPid": 5136,
   "webpackServerPort": null
 }
