@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from "react" 
 import {
   Animated,
   Dimensions,
@@ -8,29 +8,24 @@ import {
   StyleSheet,
   ScrollView,
   StatusBar
-} from "react-native";
-
-import { Button, Block, Text } from "../components";
-import { theme } from "../constants";
-
-const { width, height } = Dimensions.get("window");
+} from "react-native" 
+import { Button, Block, Text } from "../components" 
+import { theme } from "../constants" 
+const { width, height } = Dimensions.get("window") 
 
 class Welcome extends Component {
   static navigationOptions = {
     headerShown: false
   }
 
-  scrollX = new Animated.Value(0);
+  scrollX = new Animated.Value(0) 
 
   state = {
     showTerms: false
-  };
-
- 
+  } 
 
   renderIllustrations() {
-    const { illustrations } = this.props;
-
+    const { illustrations } = this.props 
     return (
       <FlatList
         horizontal
@@ -55,12 +50,12 @@ class Welcome extends Component {
           }
         ])}
       />
-    );
+    ) 
   }
 
   renderSteps() {
-    const { illustrations } = this.props;
-    const stepPosition = Animated.divide(this.scrollX, width);
+    const { illustrations } = this.props 
+    const stepPosition = Animated.divide(this.scrollX, width) 
     return (
       <Block row center middle style={styles.stepsContainer}>
         {illustrations.map((item, index) => {
@@ -68,7 +63,7 @@ class Welcome extends Component {
             inputRange: [index - 1, index, index + 1],
             outputRange: [0.4, 1, 0.4],
             extrapolate: "clamp"
-          });
+          }) 
 
           return (
             <Block
@@ -78,10 +73,10 @@ class Welcome extends Component {
               color="gray"
               style={[styles.steps, { opacity }]}
             />
-          );
+          ) 
         })}
       </Block>
-    );
+    ) 
   }
 
   render() {
@@ -126,7 +121,7 @@ class Welcome extends Component {
           
         
       </Block>
-    );
+    ) 
   }
 }
 
@@ -136,9 +131,9 @@ Welcome.defaultProps = {
     { id: 2, source: require("../assets/images/illustration_2.png") },
     { id: 3, source: require("../assets/images/illustration_3.png") }
   ]
-};
+} 
 
-export default Welcome;
+export default Welcome 
 
 const styles = StyleSheet.create({
   stepsContainer: {
@@ -153,4 +148,4 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginHorizontal: 2.5
   }
-});
+}) 

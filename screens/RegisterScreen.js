@@ -7,11 +7,9 @@ import {
   Dimensions,
   StatusBar,
   AsyncStorage,
-  TouchableOpacity,
-  
+  TouchableOpacity
 } from "react-native" 
 import Constants from 'expo-constants'
-
 import Firebase from '../firebase' 
 import { Button, Block, Input, Text } from "../components" 
 import { theme } from "../constants" 
@@ -22,9 +20,7 @@ export default class SignUp extends Component {
     headerShown: false
   }
 
-   
-  state = { name: "", email: "", password: "", check: false, errorMessage: null, loading: false }
- 
+  state = { name: "", email: "", password: "", check: false, errorMessage: null, loading: false } 
   
   handleSignUp = () => {
     this.setState({
@@ -57,12 +53,7 @@ export default class SignUp extends Component {
           .catch(error => this.setState({ errorMessage: error.message })) 
     AsyncStorage.setItem('email', this.state.email, () => {
     })
-    // setTimeout(() => {
-    //   this.setState({
-    //     loading: false,
-    //   }) 
-    // }, 500) 
-        
+    
   } 
   render() {
     return (

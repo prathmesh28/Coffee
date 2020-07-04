@@ -1,22 +1,18 @@
 import React from "react" 
-import { Animated,Dimensions,View,StatusBar,TextInput, Picker, Image, StyleSheet, LayoutAnimation, Alert,ToastAndroid,Modal } from "react-native" 
-//import Card from 'react-native-paper'
+import { Animated,Dimensions,View,StatusBar, Picker, Image, StyleSheet, LayoutAnimation, Alert,ToastAndroid,Modal } from "react-native" 
 import { Button, Block, Text, Input, Divider } from "../../components" 
 import { theme } from "../../constants" 
 import Loader from '../Loader'
 import LottieView from 'lottie-react-native';
-
 import storage from '@react-native-firebase/storage' 
 import { utils } from '@react-native-firebase/app' 
 import firebase from '../../firebase'
 import Constants from 'expo-constants'
-//import MapView from 'expo' 
 import MapView from 'react-native-maps' 
 import { Marker } from 'react-native-maps' 
 import * as Location from 'expo-location'
 import AnimatedLoader from "react-native-animated-loader";
 const { width, height } = Dimensions.get('screen') 
-
 let Pincode
 let link
 var uid
@@ -44,236 +40,192 @@ export default class DisplayScreen extends React.Component {
         date: null,
         loading: false,
         pass: false
-      }
     }
-    async componentDidMount () {
+  }
+  async componentDidMount () {
+    this.setState({
+      loading: true,
+    }) 
+    var today = new Date().toLocaleString()
+    this.setState({date: today})
+    
+    let location = await Location.getCurrentPositionAsync({  })
+    let lat = location.coords.latitude
+    let lon = location.coords.longitude
+    LatLng =  {
+      latitude: lat,
+      longitude: lon,
+    }
+    
+    console.log(location.coords)
+    let geocode = await Location.reverseGeocodeAsync(location.coords)
+    //console.log('hi',geocode[0])
+    address = geocode[0].name + ', ' + geocode[0].city + ', ' + geocode[0].region + ', ' + geocode[0].country + ', ' + geocode[0].postalCode + '.'
+    console.log(address)
+    Pincode = geocode[0].postalCode
+    uid = firebase.auth().currentUser.uid
+    const photo= this.props.navigation.getParam('photo') 
+    weed = photo.width/photo.height
+    this.setState({ 
+      imageclick: photo.uri,
+      lat,
+      lon
+    })
+    setTimeout(() => {
       this.setState({
-        loading: true,
+        loading: false,
       }) 
-      var today = new Date().toLocaleString()
-      this.setState({date: today})
-
-      
-      let location = await Location.getCurrentPositionAsync({  })
-      let lat = location.coords.latitude
-      let lon = location.coords.longitude
-      // LatLng =  {
-      //   latitude: lat,
-      //   longitude: lon,
-      // }
-      //15.5249466,73.8319437
-       LatLng =  {
-        latitude: 15.5249466,
-        longitude: 73.8319437,
-      }
-      console.log(location.coords)
-      let geocode = await Location.reverseGeocodeAsync(location.coords)
-      //console.log('hi',geocode[0])
-      address = geocode[0].name + ', ' + geocode[0].city + ', ' + geocode[0].region + ', ' + geocode[0].country + ', ' + geocode[0].postalCode + '.'
-      console.log(address)
-      Pincode = geocode[0].postalCode
-      uid = firebase.auth().currentUser.uid
-      const photo= this.props.navigation.getParam('photo') 
-      weed = photo.width/photo.height
-      this.setState({ 
-        imageclick: photo.uri,
-        lat,
-        lon
-       })
-       setTimeout(() => {
-        this.setState({
-          loading: false,
-        }) 
-      }, 2000) 
-    } 
+    }, 2000) 
+  } 
 
     
-      uploadImage = async (uri, imageName) => {
-        const responce = await fetch(uri)
-        const blob =await responce.blob()
-        var ref = firebase.storage().ref().child(uid+ '/' + imageName)
-        await this.uplodimg(ref, blob)
-        link = await this.getlink(ref)
-       // this.setState({ imageclick: link })
-        console.log(link)
-      } 
-      uplodimg = async ( ref, blob) => {
-        return ref.put(blob).then( () =>{
-          console.log('updated')
-        })
-      }
-      getlink = async ( ref ) => {
+  uploadImage = async (uri, imageName) => {
+    const responce = await fetch(uri)
+    const blob =await responce.blob()
+    var ref = firebase.storage().ref().child(uid+ '/' + imageName)
+    await this.uplodimg(ref, blob)
+    link = await this.getlink(ref)
+    // this.setState({ imageclick: link })
+    console.log(link)
+  } 
 
-       return ref.getDownloadURL()
-      
+  uplodimg = async ( ref, blob) => {
+    return ref.put(blob).then( () =>{
+      console.log('updated')
+    })
+  }
 
-      }
-
-
-      
-
+  getlink = async ( ref ) => {
+    return ref.getDownloadURL()
+  }
 
   submitButt = async () => {
     if(this.state.type==undefined){
       Alert.alert('Select Type')
     }
     else{
-       ToastAndroid.showWithGravityAndOffset(
-          "Reporting...",
-          ToastAndroid.LONG,
-          ToastAndroid.BOTTOM,
-          25,
-          50 )
-      console.log(this.state.type)
-    
-    
-    var today = new Date() 
-    const fileExtension = this.state.imageclick.split('.').pop() 
-    const fileName = `${today}.${fileExtension}` 
-   if(this.state.imageclick){
-    this.setState({pass: true});
-     
-      await this.uploadImage(this.state.imageclick, fileName)
+      ToastAndroid.showWithGravityAndOffset( "Reporting...", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50 )
+     // console.log(this.state.type)
+      var today = new Date() 
+      const fileExtension = this.state.imageclick.split('.').pop() 
+      const fileName = `${today}.${fileExtension}` 
+      if(this.state.imageclick){
+        this.setState({pass: true})
 
-      .then(() => {
-         Alert.alert('pushed to storage')
+        await this.uploadImage(this.state.imageclick, fileName)
+        .then(() => {
+          Alert.alert('pushed to storage')
           let data ={
             email: firebase.auth().currentUser.email,
             code:Pincode,
             location:LatLng,
             date:this.state.date,
-            
             photo:link,
             Type:this.state.type,
             Details:this.state.detail
           }
           console.log(data)
           console.log(this.state.date)
-            firebase.database().ref('UserData/').push({ data })
-            .then(() => console.log('Data set.'));
-         
-
+          firebase.database().ref('UserData/').push({ data }).then(() => console.log('Data set.'));
         })
         .catch((error) => {
           Alert.alert(error)
         })
-    }
-
+      }
     } 
-
-
   }
 
-    render() {
-        LayoutAnimation.easeInEaseOut() 
-        const item = this.state.imageclick
-        return (
-          <Block styles={{flex: 1,
+  render() {
+    LayoutAnimation.easeInEaseOut() 
+    const item = this.state.imageclick
+    return (
+      <Block styles={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+        <StatusBar translucent={true} backgroundColor={'#0AC4BA'}/>
+        <Loader loading={this.state.loading} />
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.pass}
+        >
+          <View style={{ flex: 1,
+            backgroundColor:'rgba(0,0,0,0.65)',
             justifyContent: "center",
-            alignItems: "center",
-            }}>
-
-<StatusBar translucent={true} backgroundColor={'#0AC4BA'}/>
-
-
-      <Loader loading={this.state.loading} />
-    
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={this.state.pass}
-      >
-        <View style={{ flex: 1,
-              backgroundColor:'rgba(0,0,0,0.65)',
-          justifyContent: "center",
-          alignItems: "center"}}>
-        <View style={{margin: 20,
-            backgroundColor: "white",
-            borderRadius: 20,
-            padding: 35,
-            alignItems: "center",
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 2
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5}}>
-           
-
-            <LottieView source={require('../../assets/tick.json')} autoPlay loop={false}
-              style={{width:100,height:100}} />
-               <Text h1 bold>Success!</Text>
-            <Text body  style={{ textAlign: "center",margin:10}}>Your complaint will be registered.{'\n'}
-Thank you for helping make our city a better place.</Text>
-             <Button color={theme.colors.primary}  style={{width:width*0.5,alignSelf:'center'}} onPress={() => this.props.navigation.navigate('App')}>
-                  <Text center bold>Back to Home</Text>
+            alignItems: "center"}}>
+            <View style={{margin: 20,
+              backgroundColor: "white",
+              borderRadius: 20,
+              padding: 35,
+              alignItems: "center",
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 2
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5}}>
+              <LottieView source={require('../../assets/tick.json')} autoPlay loop={false}
+                style={{width:100,height:100}} />
+              <Text h1 bold>Success!</Text>
+              <Text body  style={{ textAlign: "center",margin:10}}>Your complaint will be registered.{'\n'}Thank you for helping make our city a better place.</Text>
+              <Button color={theme.colors.primary}  style={{width:width*0.5,alignSelf:'center'}} onPress={() => this.props.navigation.navigate('App')}>
+                <Text center bold>Back to Home</Text>
               </Button>
-
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+        <Block row style={{  marginTop:Constants.statusBarHeight, }}>
+          <Block column center
+            style={{ 
+              marginVertical:Constants.statusBarHeight, 
+              position:'relative',
+              width:width, 
+              height:height, 
+              paddingHorizontal:50 
+            }}>
+            <View  style={{width:width*0.9,height:height*0.25,alignItems:'center'}}>
+              <Image 
+                style={{ 
+                  aspectRatio: weed, 
+                  width: '100%', 
+                  height: '100%', 
+                // paddingHorizontal:30,
+                  borderRadius:5,
+                  borderWidth:1,
+                  borderColor: theme.colors.primary,
+                }} 
+                source={{ uri: item }} />
+            </View>
+            <View style={{width:width*0.9,height:1,backgroundColor:'#808088',marginVertical:10}}/>
+            <View style={{flexDirection: 'row', alignItems: 'center',width:width*0.8}}>
+              <Text black bold h2>Type:</Text>
+              <Picker
+                selectedValue={this.state.type}
+                style={{ height: 50, width: 200, backgroundColor:'#fff' ,
+                  color:theme.colors.secondary
+                }}
+                onValueChange={type => this.setState({ type })}
+              >
+                <Picker.MODE_DIALOG label="Select type" />
+                <Picker.Item label="Garbage" value="Garbage" />
+                <Picker.Item label="Potholes" value="Potholes" />
+                <Picker.Item label="Dead Animals" value="Animals" />
+              </Picker>
+            </View>
 
-              <Block row style={{  marginTop:Constants.statusBarHeight, }}>
-                <Block column center
-                  style={{ 
-                    marginVertical:Constants.statusBarHeight, 
-                    position:'relative',
-                    width:width, 
-                    height:height, 
-                    paddingHorizontal:50 
-                  }}>
-                    
-                  <View  style={{width:width*0.9,height:height*0.25,alignItems:'center'}}>
-                    <Image 
-                      style={{ 
-                        aspectRatio: weed, 
-                        width: '100%', 
-                        height: '100%', 
-                      // paddingHorizontal:30,
-                        borderRadius:5,
-                        borderWidth:1,
-                        borderColor: theme.colors.primary,
-                      }} 
-                      source={{ uri: item }} />
-                  </View>
-             <View style={{width:width*0.9,height:1,backgroundColor:'#808088',marginVertical:10}}/>
+            <View style={{width:width*0.9,height:1,backgroundColor:'#808088',marginVertical:10}}/>
+            <View style={{width:width*0.8}} >
+            <Text bold black>Details (Optional)</Text> 
+              <Input
+                multiline={true}
+                style={[styles.input]}
+          
+                numberOfLines={4}
+                onChangeText={(detail) => this.setState({detail})}
+                value={this.state.detail}/>
 
-                  <View 
-                    style={{flexDirection: 'row', alignItems: 'center',width:width*0.8}}
-                    >
-                    <Text black bold h2>Type:</Text>
-
-                    <Picker
-                      selectedValue={this.state.type}
-                   //   itemStyle={{fontSize: 70, fontWeight: "bold"}}
-                      style={{ height: 50, width: 200, backgroundColor:'#fff' ,
-                        color:theme.colors.secondary
-                      }}
-                      onValueChange={type => this.setState({ type })}
-                    >
-                      <Picker.MODE_DIALOG label="Select type" />
-                      <Picker.Item label="Garbage" value="Garbage" />
-                      <Picker.Item label="Potholes" value="Potholes" />
-                      <Picker.Item label="Dead Animals" value="Animals" />
-                    </Picker>
-                  </View>
-                  <View style={{width:width*0.9,height:1,backgroundColor:'#808088',marginVertical:10}}/>
-
-
-                  <View style={{width:width*0.8}} >
-                  <Text bold black>Details (Optional)</Text> 
-                    <Input
-                      multiline={true}
-                      style={[styles.input]}
-               
-                      numberOfLines={4}
-                      onChangeText={(detail) => this.setState({detail})}
-                      value={this.state.detail}/>
-
-                  </View>
-                  <View style={{width:width*0.9,height:1,backgroundColor:'#808088',marginBottom:10}}/>
+            </View>
+            <View style={{width:width*0.9,height:1,backgroundColor:'#808088',marginBottom:10}}/>
 
            {/* <Card style={{borderColor:'grey',width:width*0.9,borderWidth:1}}>
             */}
