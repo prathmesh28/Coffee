@@ -59,7 +59,7 @@ const AppTabNavigator = createBottomTabNavigator(
     {
         tabBarOptions: {
           
-            activeTintColor: "#208720",
+            activeTintColor: "#0AC4BA",
             inactiveTintColor: "#8d9096",
             style:{height:60,paddingVertical:10}
             

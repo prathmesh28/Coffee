@@ -1,5 +1,5 @@
 import React from "react" 
-import { Animated,Dimensions,View,TextInput, Picker, Image, StyleSheet, LayoutAnimation, Alert,ToastAndroid,Modal } from "react-native" 
+import { Animated,Dimensions,View,StatusBar,TextInput, Picker, Image, StyleSheet, LayoutAnimation, Alert,ToastAndroid,Modal } from "react-native" 
 //import Card from 'react-native-paper'
 import { Button, Block, Text, Input, Divider } from "../../components" 
 import { theme } from "../../constants" 
@@ -57,12 +57,18 @@ export default class DisplayScreen extends React.Component {
       let location = await Location.getCurrentPositionAsync({  })
       let lat = location.coords.latitude
       let lon = location.coords.longitude
-      LatLng =  {
-        latitude: lat,
-        longitude: lon,
+      // LatLng =  {
+      //   latitude: lat,
+      //   longitude: lon,
+      // }
+      //15.5249466,73.8319437
+       LatLng =  {
+        latitude: 15.5249466,
+        longitude: 73.8319437,
       }
+      console.log(location.coords)
       let geocode = await Location.reverseGeocodeAsync(location.coords)
-      console.log('hi',geocode[0])
+      //console.log('hi',geocode[0])
       address = geocode[0].name + ', ' + geocode[0].city + ', ' + geocode[0].region + ', ' + geocode[0].country + ', ' + geocode[0].postalCode + '.'
       console.log(address)
       Pincode = geocode[0].postalCode
@@ -108,52 +114,52 @@ export default class DisplayScreen extends React.Component {
 
 
   submitButt = async () => {
-  //   if(this.state.type==undefined){
-  //     Alert.alert('Select Type')
-  //   }
-  //   else{
-  //      ToastAndroid.showWithGravityAndOffset(
-  //         "Reporting...",
-  //         ToastAndroid.LONG,
-  //         ToastAndroid.BOTTOM,
-  //         25,
-  //         50 )
-  //     console.log(this.state.type)
+    if(this.state.type==undefined){
+      Alert.alert('Select Type')
+    }
+    else{
+       ToastAndroid.showWithGravityAndOffset(
+          "Reporting...",
+          ToastAndroid.LONG,
+          ToastAndroid.BOTTOM,
+          25,
+          50 )
+      console.log(this.state.type)
     
     
-  //   var today = new Date() 
-  //   const fileExtension = this.state.imageclick.split('.').pop() 
-  //   const fileName = `${today}.${fileExtension}` 
-  //  if(this.state.imageclick){
+    var today = new Date() 
+    const fileExtension = this.state.imageclick.split('.').pop() 
+    const fileName = `${today}.${fileExtension}` 
+   if(this.state.imageclick){
     this.setState({pass: true});
-    //  
-    //   await this.uploadImage(this.state.imageclick, fileName)
+     
+      await this.uploadImage(this.state.imageclick, fileName)
 
-    //   .then(() => {
-    //      Alert.alert('pushed to storage')
-    //       let data ={
-    //         email: firebase.auth().currentUser.email,
-    //         code:Pincode,
-    //         location:LatLng,
-    //         date:this.state.date,
+      .then(() => {
+         Alert.alert('pushed to storage')
+          let data ={
+            email: firebase.auth().currentUser.email,
+            code:Pincode,
+            location:LatLng,
+            date:this.state.date,
             
-    //         photo:link,
-    //         Type:this.state.type,
-    //         Details:this.state.detail
-    //       }
-    //       console.log(data)
-    //       console.log(this.state.date)
-    //         firebase.database().ref('UserData/').push({ data })
-    //         .then(() => console.log('Data set.'));
+            photo:link,
+            Type:this.state.type,
+            Details:this.state.detail
+          }
+          console.log(data)
+          console.log(this.state.date)
+            firebase.database().ref('UserData/').push({ data })
+            .then(() => console.log('Data set.'));
          
 
-    //     })
-    //     .catch((error) => {
-    //       Alert.alert(error)
-    //     })
-    // }
+        })
+        .catch((error) => {
+          Alert.alert(error)
+        })
+    }
 
-    // } 
+    } 
 
 
   }
@@ -167,26 +173,9 @@ export default class DisplayScreen extends React.Component {
             alignItems: "center",
             }}>
 
-  
-{/* <Modal 
-      transparent={true}
-        visible={true} >
-                <View center style={{
-                  width:width*0.7,height:height*0.5,backgroundColor:'#fff',
-                  justifyContent:'center',alignSelf:'center',alignItems: "center",
-                
-                  }}>
-                            
-              <Text body style={{ textAlign: "center"}}>Your complaint will be registered.
-Thank you for helping make our city a better place.</Text>
-             <Button gradient style={{width:width*0.5,alignSelf:'center'}} >
-                  <Text center semibold>Back to Home</Text>
-              </Button>
-           
-        </View> 
-     
-                  
-              </Modal> */}
+<StatusBar translucent={true} backgroundColor={'#0AC4BA'}/>
+
+
       <Loader loading={this.state.loading} />
     
       <Modal
@@ -218,15 +207,15 @@ Thank you for helping make our city a better place.</Text>
                <Text h1 bold>Success!</Text>
             <Text body  style={{ textAlign: "center",margin:10}}>Your complaint will be registered.{'\n'}
 Thank you for helping make our city a better place.</Text>
-             <Button gradient style={{width:width*0.5,alignSelf:'center'}} onPress={() => this.props.navigation.navigate('App')}>
-                  <Text center semibold>Back to Home</Text>
+             <Button color={theme.colors.primary}  style={{width:width*0.5,alignSelf:'center'}} onPress={() => this.props.navigation.navigate('App')}>
+                  <Text center bold>Back to Home</Text>
               </Button>
 
           </View>
         </View>
       </Modal>
 
-              <Block row >
+              <Block row style={{  marginTop:Constants.statusBarHeight, }}>
                 <Block column center
                   style={{ 
                     marginVertical:Constants.statusBarHeight, 
@@ -258,7 +247,10 @@ Thank you for helping make our city a better place.</Text>
 
                     <Picker
                       selectedValue={this.state.type}
-                      style={{ height: 50, width: 200,backgroundColor:'#fff' ,color:theme.colors.secondary }}
+                   //   itemStyle={{fontSize: 70, fontWeight: "bold"}}
+                      style={{ height: 50, width: 200, backgroundColor:'#fff' ,
+                        color:theme.colors.secondary
+                      }}
                       onValueChange={type => this.setState({ type })}
                     >
                       <Picker.MODE_DIALOG label="Select type" />
@@ -313,7 +305,7 @@ Thank you for helping make our city a better place.</Text>
              select type required before pushing to database*/}
                 <Block row middle >
                 <Button gradient style={{width:width*0.5,marginVertical:20}} onPress={() => this.submitButt() } >
-                  <Text center semibold>submit</Text>
+                  <Text center h3 bold black>Submit</Text>
                   </Button>
                 {/* <Button onPress={() =>this.props.navigation.navigate('App')} ><Text>back</Text></Button> */}
                 </Block>

@@ -8,7 +8,10 @@ import {
   StatusBar,
   AsyncStorage,
   TouchableOpacity,
+  
 } from "react-native" 
+import Constants from 'expo-constants'
+
 import Firebase from '../firebase' 
 import { Button, Block, Input, Text } from "../components" 
 import { theme } from "../constants" 
@@ -64,8 +67,8 @@ export default class SignUp extends Component {
   render() {
     return (
     <SafeAreaView style={styles.container}>
-      <Block  style={styles.signup} >
-        <StatusBar  />
+      <Block  style={{...styles.signup,marginTop:Constants.statusBarHeight}} >
+      <StatusBar translucent={true} backgroundColor={'#0AC4BA'}/>
         <Loader loading={this.state.loading} />
         <Block shadow style={{ top:7,width:width, position:'absolute',}}>
           <Ionicons style={{margin:20}}  name="ios-arrow-back" size={24} color="black" onPress={() =>this.props.navigation.navigate('Start')} />

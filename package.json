@@ -26,6 +26,7 @@
     "expo-permissions": "8.0.0",
     "firebase": "^7.6.2",
     "galio-framework": "^0.6.3",
+    "lodash": "^4.17.15",
     "lottie-react-native": "^3.4.0",
     "moment": "^2.25.3",
     "native-base": "^2.13.12",

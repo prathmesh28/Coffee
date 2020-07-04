@@ -6,7 +6,8 @@ import {
   FlatList,
   Modal,
   StyleSheet,
-  ScrollView
+  ScrollView,
+  StatusBar
 } from "react-native";
 
 import { Button, Block, Text } from "../components";
@@ -87,6 +88,7 @@ class Welcome extends Component {
 
     return (
       <Block>
+         <StatusBar translucent={true} backgroundColor={'#0AC4BA'}/>
         <Block center bottom flex={0.4}>
           <Text h1 center bold>
             Your Home.

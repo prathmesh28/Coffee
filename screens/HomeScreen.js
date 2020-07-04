@@ -1,9 +1,12 @@
 import React from "react";
-import { StyleSheet, LayoutAnimation, Dimensions, TouchableOpacity, StatusBar, ImageBackground } from "react-native";
-import { Block, theme } from 'galio-framework'
-import { Avatar,Text, Button, Card, Title, Paragraph } from 'react-native-paper';
+import { View, StyleSheet, LayoutAnimation, Dimensions, TouchableOpacity, StatusBar, ImageBackground } from "react-native";
+import Constants from 'expo-constants'
+import { Avatar, Card, Title, Paragraph } from 'react-native-paper';
 import { MaterialIcons } from '@expo/vector-icons'; 
 import Firebase from '../firebase';
+import { Text, Button } from "../components" 
+import { theme } from "../constants" 
+
 const { height, width } = Dimensions.get('screen')  
 const image =  require("../assets/backgrenn.jpg") 
 
@@ -18,12 +21,15 @@ export default class HomeScreen extends React.Component {
     render() {
         LayoutAnimation.easeInEaseOut();
         return (
-            <Block flex>
-                <StatusBar translucent={true}  backgroundColor={'transparent'} />
-
-                <ImageBackground source={image} style={{ flex: 1, resizeMode: "cover",}}>
+            <View >
+                <StatusBar translucent={true}  backgroundColor={'#0AC4BA'} />
+                <View   style={{width:width, marginVertical:Constants.statusBarHeight}}>
+                <Button gradient start={{x: 0, y: 0}} end={{x: 0, y: 1}} 
+                  startColor={theme.colors.primary} endColor={'#fff'} style={{borderRadius:0,marginVertical:0,height:Constants.statusBarHeight}}>
+                 </Button>
+                {/* <ImageBackground source={image} style={{ flex: 1, resizeMode: "cover",}}> */}
     
-                <Card style={{marginTop:100, width:width*0.8,alignSelf:"center",justifyContent:"center", alignItems:"center"}}>
+                <Card style={{marginTop:100, backgroundColor:'#f7fcf8',borderRadius:4, width:width*0.8,alignSelf:"center",justifyContent:"center", alignItems:"center"}}>
                     <Card.Content>
                    <TouchableOpacity style={{alignSelf:"center",alignItems:"center"}}
                     onPress={() =>this.props.navigation.navigate('Submit')}>
@@ -32,9 +38,9 @@ export default class HomeScreen extends React.Component {
                 </TouchableOpacity>
                     </Card.Content>
                 </Card> 
-
-                </ImageBackground>
-                </Block>
+</View>
+                {/* </ImageBackground> */}
+                </View>
         );
     }
 }

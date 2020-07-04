@@ -2,6 +2,8 @@ import React, { Component } from "react"
 import { Ionicons } from '@expo/vector-icons'   
 import Modal from 'react-native-modal'  
 import { LinearGradient } from 'expo-linear-gradient'
+import Constants from 'expo-constants'
+
 import {
   SafeAreaView,
   Dimensions,
@@ -70,8 +72,9 @@ export default class Login extends Component {
    
     return (
     <SafeAreaView style={styles.container}>
-      <Block  style={styles.signup} >
-        <StatusBar  />
+      <Block  style={{...styles.signup,marginTop:Constants.statusBarHeight}} >
+      <StatusBar translucent={true} backgroundColor={'#0AC4BA'}/>
+
         <Loader loading={this.state.loading} />
         <Modal isVisible={this.state.pass} onBackdropPress={() => this.setState({pass: false})}>
           <View  style={styles.activityIndicatorWrapper} >
@@ -92,7 +95,7 @@ export default class Login extends Component {
               
               </View>
             </Modal>
-        <Block  style={{ top:7,width:width, position:'absolute',}}>
+        <Block  style={{ top:7,width:width, position:'absolute'}}>
           <Ionicons style={{margin:20}}  name="ios-arrow-back" size={24} color="black" onPress={() =>this.props.navigation.navigate('Start')} />
           <Button shadow style={{width:80,margin:10,right:5,position:'absolute'}}  onPress={() =>this.props.navigation.navigate('Register')}>
                     <Text bold center >
