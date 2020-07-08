@@ -7,20 +7,23 @@ import {
   Modal,
   StyleSheet,
   ScrollView,
-  StatusBar
+  StatusBar,
+  View
 } from "react-native" 
 import { Button, Block, Text } from "../components" 
 import { theme } from "../constants" 
 const { width, height } = Dimensions.get("window") 
-
+import AppIntroSlider from 'react-native-app-intro-slider';
+import slides from "./Slides"
 class Welcome extends Component {
   static navigationOptions = {
     headerShown: false
   }
 
   scrollX = new Animated.Value(0) 
-
+ 
   state = {
+    showRealApp: false,
     showTerms: false
   } 
 
@@ -79,7 +82,43 @@ class Welcome extends Component {
     ) 
   }
 
+
+  _renderItem = ({ item }) => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: item.backgroundColor,
+          alignItems: 'center',
+          justifyContent: 'space-around',
+         // paddingBottom: 100
+        }}>
+        {/* <Text style={styles.title}>{item.title}</Text> */}
+        <Image style={styles.image} source={item.image} />
+        <Text style={styles.text}>{item.text}</Text>
+      </View>
+    );
+  };
+
   render() {
+    if (this.state.showRealApp) {
+      return (
+        <Block style={styles.container}>
+         <StatusBar translucent={true} backgroundColor={'#0AC4BA'}/>
+          <AppIntroSlider
+            data={slides}
+            renderItem={this._renderItem}
+            onDone={() => {
+              this.setState({ showRealApp: false })
+              this.props.navigation.navigate('Register')}}
+            showSkipButton={true}
+            onSkip={() => {
+              this.setState({ showRealApp: false })
+              this.props.navigation.navigate('Register')}}
+          />
+        </Block>
+      );
+    } else {
 
     return (
       <Block>
@@ -102,7 +141,7 @@ class Welcome extends Component {
         </Block>
         <Block middle flex={0.4} margin={[0, theme.sizes.padding * 2]}>
         
-          <Button gradient onPress={() =>this.props.navigation.navigate('Register')}>
+          <Button gradient onPress={() => this.setState({ showRealApp: true })}>
             <Text center semibold>
               Welcome
             </Text>
@@ -121,7 +160,7 @@ class Welcome extends Component {
           
         
       </Block>
-    ) 
+    ) }
   }
 }
 
@@ -147,5 +186,29 @@ const styles = StyleSheet.create({
     height: 5,
     borderRadius: 5,
     marginHorizontal: 2.5
-  }
+  },
+  image: {
+    width: width,
+    height: height,
+  },
+  text: {
+    padding: 10,
+    fontSize: 20,
+    color: 'white',
+    textAlign: 'center',
+    position:"absolute",
+    bottom:100
+  //  paddingVertical: 30,
+  },
+  title: {
+    fontSize: 30,
+    color: 'white',
+    textAlign: 'center',
+    //fontWeight: 'bold',
+    marginTop: 50,
+  },
+  container: {
+    flex:1,
+    backgroundColor: '#fff'
+  },
 }) 

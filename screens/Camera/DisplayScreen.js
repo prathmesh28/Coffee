@@ -291,11 +291,6 @@ const styles = StyleSheet.create({
     padding: 35,
     alignItems: "center",
    
-  },
-
-   lottie: {
-    width: 500,
-    height: 100
   }
  
 }) 
