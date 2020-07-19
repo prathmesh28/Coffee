@@ -50,7 +50,7 @@ export default class NotificationScreen extends React.Component {
                     })}
                   
                 </MapView>
-                <Text>Notification Screen</Text>
+             
             </View>
         )
     }

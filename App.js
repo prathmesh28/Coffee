@@ -2,10 +2,10 @@ import React from "react"
 import { createAppContainer, createSwitchNavigator } from "react-navigation"
 import { createStackNavigator } from "react-navigation-stack"
 import { createBottomTabNavigator } from "react-navigation-tabs"
-import { Ionicons } from "@expo/vector-icons"
-import { Fontisto } from '@expo/vector-icons'
-import { FontAwesome } from '@expo/vector-icons'
-import { Asset } from 'expo-asset';
+import Ionicons from "react-native-vector-icons/Ionicons"
+import Fontisto from 'react-native-vector-icons/Fontisto'
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+// import { Asset } from 'expo-asset';
 import { AppLoading } from 'expo';
 
 import LoadingScreen from "./screens/LoadingScreen"
@@ -20,21 +20,21 @@ import StartScreen from "./screens/StartScreen"
 import CameraScreen from "./screens/Camera/CameraScreen"
 import DisplayScreen from './screens/Camera/DisplayScreen'
 
-function cacheImages(images) {
-    return images.map(image => {
-      if (typeof image === 'string') {
-        return Image.prefetch(image);
-      } else {
-        return Asset.fromModule(image).downloadAsync();
-      }
-    });
-  }
+// function cacheImages(images) {
+//     return images.map(image => {
+//       if (typeof image === 'string') {
+//         return Image.prefetch(image);
+//       } else {
+//         return Asset.fromModule(image).downloadAsync();
+//       }
+//     });
+//  }
 const AppTabNavigator = createBottomTabNavigator(
     {
         Home: {
             screen: HomeScreen,
             navigationOptions: {
-                tabBarIcon: ({ tintColor }) => <Ionicons name="ios-home" size={30} color={tintColor} />
+              tabBarIcon: ({ tintColor }) => <Ionicons name="ios-home" size={30} color={tintColor} />
             }
         },
         History: {
@@ -46,7 +46,7 @@ const AppTabNavigator = createBottomTabNavigator(
         Dumps: {
             screen: NotificationScreen,
             navigationOptions: {
-              tabBarIcon: ({ tintColor }) => <Fontisto name="world" size={30} color={tintColor} />
+             tabBarIcon: ({ tintColor }) => <Fontisto name="world" size={30} color={tintColor} />
             }
         },
         Profile: {
@@ -106,9 +106,9 @@ class App extends React.Component {
       }
     async _loadAssetsAsync() {
       //if images taking time to load use this
-        const imageAssets = cacheImages([require('./assets/login.jpg')])
+        // const imageAssets = cacheImages([require('./assets/login.jpg')])
     
-        await Promise.all([...imageAssets]);
+        // await Promise.all([...imageAssets]);
       }
     render() {
         if (!this.state.isReady) {

@@ -16,6 +16,7 @@
     "metro": "^0.59.0"
   },
   "dependencies": {
+    "@expo/vector-icons": "^10.0.0",
     "@react-native-community/masked-view": "^0.1.1",
     "@react-native-firebase/app": "^7.1.0",
     "@react-native-firebase/storage": "^7.1.0",

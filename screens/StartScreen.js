@@ -91,11 +91,11 @@ class Welcome extends Component {
           backgroundColor: item.backgroundColor,
           alignItems: 'center',
           justifyContent: 'space-around',
-         // paddingBottom: 100
         }}>
-        {/* <Text style={styles.title}>{item.title}</Text> */}
         <Image style={styles.image} source={item.image} />
-        <Text style={styles.text}>{item.text}</Text>
+        <View style={{width:width,position:"absolute",bottom:0, height:200,backgroundColor:'rgba(10,196,186,0.3)'}}>
+          <Text style={styles.text}>{item.text}</Text>
+        </View>
       </View>
     );
   };
@@ -197,16 +197,9 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     position:"absolute",
-    bottom:100
-  //  paddingVertical: 30,
+    bottom:80
   },
-  title: {
-    fontSize: 30,
-    color: 'white',
-    textAlign: 'center',
-    //fontWeight: 'bold',
-    marginTop: 50,
-  },
+
   container: {
     flex:1,
     backgroundColor: '#fff'

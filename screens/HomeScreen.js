@@ -7,6 +7,7 @@ import Firebase from '../firebase'
 import { Text, Button } from "../components" 
 import { theme } from "../constants" 
 const { height, width } = Dimensions.get('screen')  
+import LottieView from 'lottie-react-native';
 
 export default class HomeScreen extends React.Component {
     state = { email: "", displayName: "" }  
@@ -37,11 +38,18 @@ export default class HomeScreen extends React.Component {
                             </TouchableOpacity>
                         </Card.Content>
                     </Card> 
-                    <View style={{marginTop:300, backgroundColor:'rgba(10,196,186,0.1)', padding:10,
+                    {/* <View style={{backgroundColor:'#fff',
+                        width:400,height:400,alignSelf:"center",justifyContent:"center", alignItems:"center",
+                        }}>
+                            <LottieView source={require('../assets/home.json')} autoPlay 
+                            //loop={false}
+                        style={{width:100,height:100}} />
+                    </View> */}
+                    {/* <View style={{marginTop:300, backgroundColor:'rgba(10,196,186,0.1)', padding:10,
                         width:width*0.8,alignSelf:"center",justifyContent:"center", alignItems:"center",
                         }}>      
                         <Text style={{fontStyle:'italic'}} center h3 secondary>Progress is impossible without change, and those who cannot change their minds cannot change anything.</Text>       
-                    </View> 
+                    </View>  */}
                 </View>
             </View>
         )
