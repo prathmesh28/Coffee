@@ -37,7 +37,7 @@ export default class NotificationScreen extends React.Component {
                 <StatusBar  backgroundColor={theme.colors.primary}/>
                 <MapView
                   style={{ alignSelf: 'center',
-                    height: height,width:width,
+                    height: heiht,width:width,
                     }}
                   region={{ latitude: this.state.lat, longitude: this.state.lon, latitudeDelta: 0.4, longitudeDelta:0.4 }}
                 >
