@@ -12,6 +12,7 @@ import MapView from 'react-native-maps'
 import { Marker } from 'react-native-maps' 
 import * as Location from 'expo-location'
 import AnimatedLoader from "react-native-animated-loader";
+import axios from 'axios';
 const { width, height } = Dimensions.get('screen') 
 let Pincode
 let link
@@ -57,11 +58,11 @@ export default class DisplayScreen extends React.Component {
       longitude: lon,
     }
     
-    console.log(location.coords)
+ //   console.log(location.coords)
     let geocode = await Location.reverseGeocodeAsync(location.coords)
     //console.log('hi',geocode[0])
     address = geocode[0].name + ', ' + geocode[0].city + ', ' + geocode[0].region + ', ' + geocode[0].country + ', ' + geocode[0].postalCode + '.'
-    console.log(address)
+//    console.log(address)
     Pincode = geocode[0].postalCode
     uid = firebase.auth().currentUser.uid
     const photo= this.props.navigation.getParam('photo') 
@@ -71,11 +72,155 @@ export default class DisplayScreen extends React.Component {
       lat,
       lon
     })
+
+
+
     setTimeout(() => {
       this.setState({
         loading: false,
       }) 
     }, 2000) 
+
+
+    // const axios = require('axios');
+
+
+
+    // const config = {
+    //     method: 'get',
+    //     url: 'http://webcode.me',
+    //     headers: { 'User-Agent': 'Console app' }
+    // }
+
+    // let res = await axios(config)
+
+    // console.log(res.request._header);
+
+
+    // const axios = require('axios')
+ 
+    // axios.post('https://app.supervise.ly/public/api/v3/models.infer', {
+    //   headers:{
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //     'X-API-KEY': 'my7vArRVZAN574hpYQBO35hUWf9pFPxFdsNv7CQ066nUayednUwImW940qBfRlXM4DJkJc21Wa4oG8UpRK3Ee7EkIvia3KTDQWzav5ErqwSOypxOMYjDOUphuMbzELBW'
+    // },
+    //     data:{
+    //       id: 18517,
+    //       data: '{}',
+    //       image:  {
+    //         name:'testImage.jpg',
+    //         type: 'image/jpeg',
+    //         rb:this.state.imageclick
+    //       }
+    //     }
+       
+    //   }
+    //   )
+    //   .then(function (response) {
+    //     console.log(response);
+    //   })
+
+    // const axios = require('axios');
+
+    // async function makeRequest() {
+    
+    //     const config = {
+    //         method: 'get',
+    //         url: 'http://webcode.me',
+    //         headers: { 'User-Agent': 'Console app' }
+    //     }
+    
+    //     let res = await axios(config)
+    
+    //     console.log(res.request._header);
+    // }
+    
+
+    const axios = require('axios')
+        files= { 
+           id: 18517,
+          data: '{}',
+          image: ('testImage.jpg','image/jpeg',this.state.imageclick)
+          // image:  {
+          //   name:'testImage.jpg',
+          //   type: 'image/jpeg',
+          //   rb:this.state.imageclick
+          // }
+        }
+        headers={
+           //   Accept: 'application/json',
+              'Content-Type': 'application/json',
+              'X-API-KEY': 'my7vArRVZAN574hpYQBO35hUWf9pFPxFdsNv7CQ066nUayednUwImW940qBfRlXM4DJkJc21Wa4oG8UpRK3Ee7EkIvia3KTDQWzav5ErqwSOypxOMYjDOUphuMbzELBW'
+        }
+    // let res = await axios.post('https://app.supervise.ly/public/api/v3/models.infer', {headers}, files)
+    // console.log(res.data);
+
+    try {
+      let res = await axios.post('https://app.supervise.ly/public/api/v3/models.infer/', {headers}, files)
+      console.log(res);
+      console.log(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+
+
+
+
+    // const resp = await axios.post('https://app.supervise.ly/public/api/v3/models.infer', {
+    //   // data to be sent
+    //    data: { 
+    //      id: 18517,
+    //    data: '{}',
+    //    image:  {
+    //     name:'testImage.jpg',
+    //     type: 'image/jpeg',
+    //     rb:this.state.imageclick
+    //    }}
+    //   },
+    //   { headers:{
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //     'X-API-KEY': 'my7vArRVZAN574hpYQBO35hUWf9pFPxFdsNv7CQ066nUayednUwImW940qBfRlXM4DJkJc21Wa4oG8UpRK3Ee7EkIvia3KTDQWzav5ErqwSOypxOMYjDOUphuMbzELBW'
+    //    }}
+    //   )
+    //   console.log(resp.data)
+
+
+
+
+      // .then(response => {
+      //   if (response.data.status) {
+      //    console.log(response);
+      //  }
+      // })
+      // .catch((error) => {
+      //   console.log(error)
+      // })
+
+    // axios.post('https://app.supervise.ly/public/api/v3/models.infer', {
+    //   // data to be sent
+    //     id: 18517,
+    //    data: '{}',
+    //    image:  {
+    //     name:'testImage.jpg',
+    //     type: 'image/jpeg',
+    //     rb:this.state.imageclick
+    //    }
+    //   },
+    //   { headers:{
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //     'X-API-KEY': 'my7vArRVZAN574hpYQBO35hUWf9pFPxFdsNv7CQ066nUayednUwImW940qBfRlXM4DJkJc21Wa4oG8UpRK3Ee7EkIvia3KTDQWzav5ErqwSOypxOMYjDOUphuMbzELBW'
+    //    }}
+    //   )
+    //   .then(response => {
+    //     if (response.data.status) {
+    //      console.log(response);
+    //    } 
+    //   }).catch(error => {console.log(error)});
+
+
   } 
 
     
@@ -124,8 +269,8 @@ export default class DisplayScreen extends React.Component {
             Type:this.state.type,
             Details:this.state.detail
           }
-          console.log(data)
-          console.log(this.state.date)
+   //       console.log(data)
+   //       console.log(this.state.date)
           firebase.database().ref('UserData/').push({ data }).then(() => console.log('Data set.'));
         })
         .catch((error) => {

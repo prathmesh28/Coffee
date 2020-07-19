@@ -1,10 +1,10 @@
 {
   "devToolsPort": 19002,
-  "expoServerPort": null,
+  "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 6744,
+  "packagerPid": 4384,
   "expoServerNgrokUrl": "https://7y-f2d.anonymous.coffee.exp.direct",
   "packagerNgrokUrl": "https://packager.7y-f2d.anonymous.coffee.exp.direct",
-  "ngrokPid": 11616,
+  "ngrokPid": 10516,
   "webpackServerPort": null
 }

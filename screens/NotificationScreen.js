@@ -7,6 +7,7 @@ import _ from 'lodash'
 import { theme } from "../constants" 
 const { width, height } = Dimensions.get('screen') 
 import * as Location from 'expo-location'
+import { HeaderHeightContext } from "react-navigation-stack"
 
 export default class NotificationScreen extends React.Component {
     state = {
@@ -37,7 +38,7 @@ export default class NotificationScreen extends React.Component {
                 <StatusBar  backgroundColor={theme.colors.primary}/>
                 <MapView
                   style={{ alignSelf: 'center',
-                    height: heiht,width:width,
+                    height: height,width:width,
                     }}
                   region={{ latitude: this.state.lat, longitude: this.state.lon, latitudeDelta: 0.4, longitudeDelta:0.4 }}
                 >
