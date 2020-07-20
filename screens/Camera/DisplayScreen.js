@@ -13,6 +13,7 @@ import { Marker } from 'react-native-maps'
 import * as Location from 'expo-location'
 import AnimatedLoader from "react-native-animated-loader";
 import axios from 'axios';
+import fs from 'react-native-fs'
 const { width, height } = Dimensions.get('screen') 
 let Pincode
 let link
@@ -137,32 +138,74 @@ export default class DisplayScreen extends React.Component {
     // }
     
 
-    const axios = require('axios')
-        files= { 
-           id: 18517,
-          data: '{}',
-          image: ('testImage.jpg','image/jpeg',this.state.imageclick)
-          // image:  {
-          //   name:'testImage.jpg',
-          //   type: 'image/jpeg',
-          //   rb:this.state.imageclick
-          // }
-        }
-        headers={
-           //   Accept: 'application/json',
-              'Content-Type': 'application/json',
-              'X-API-KEY': 'my7vArRVZAN574hpYQBO35hUWf9pFPxFdsNv7CQ066nUayednUwImW940qBfRlXM4DJkJc21Wa4oG8UpRK3Ee7EkIvia3KTDQWzav5ErqwSOypxOMYjDOUphuMbzELBW'
-        }
-    // let res = await axios.post('https://app.supervise.ly/public/api/v3/models.infer', {headers}, files)
-    // console.log(res.data);
+    // const RNFS = require("react-native-fs")
+     
+    //  console.log(RNFS.readFile(this.state.imageclick, 'base64'))
+    // RNFS.readFile(this.state.imageclick, "base64").then(data => {
+    //   // binary data
+    //   console.log(data);
+    // });
 
-    try {
-      let res = await axios.post('https://app.supervise.ly/public/api/v3/models.infer/', {headers}, files)
-      console.log(res);
-      console.log(res.data);
-    } catch (error) {
-      console.log(error);
-    }
+    const axios = require('axios')
+
+    //     const files= { 
+    //        id: 18517,
+    //       data: '{}',
+    //       image: ('testImage.jpg','image/jpeg',this.state.imageclick)
+    //       // image:  {
+    //       //   name:'testImage.jpg',
+    //       //   type: 'image/jpeg',
+    //       //   rb:this.state.imageclick
+    //       // }
+    //     }
+    //     const headers={
+    //        //   Accept: 'application/json',
+    //           'Content-Type': 'application/json',
+    //           'X-API-KEY': 'my7vArRVZAN574hpYQBO35hUWf9pFPxFdsNv7CQ066nUayednUwImW940qBfRlXM4DJkJc21Wa4oG8UpRK3Ee7EkIvia3KTDQWzav5ErqwSOypxOMYjDOUphuMbzELBW'
+    //     }
+    // // let res = await axios.post('https://app.supervise.ly/public/api/v3/models.infer', {headers}, files)
+    // // console.log(res.data);
+    // try {
+    //   let res = await axios.post('https://app.supervise.ly/public/api/v3/models.infer/', {headers}, files)
+    //   console.log(res);
+    //   console.log(res.data);
+    // } catch (error) {
+    //   console.log(error);
+    // }
+
+
+    // const base64 = await fs.readFile(file.uri, 'base64')
+    // const buffer = Buffer.from(base64, 'base64')
+
+
+    axios.post('https://app.supervise.ly/public/api/v3/models.infer/', {
+      id: 18517,
+      data: '{}',
+      image: ('testImage.jpg','image/jpeg',this.state.imageclick)
+}, {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-KEY': 'my7vArRVZAN574hpYQBO35hUWf9pFPxFdsNv7CQ066nUayednUwImW940qBfRlXM4DJkJc21Wa4oG8UpRK3Ee7EkIvia3KTDQWzav5ErqwSOypxOMYjDOUphuMbzELBW'
+
+        }
+})
+.then(response => { 
+	console.log('one'+response)
+})
+.catch(error => {
+    console.log(error.response)
+});
+
+
+
+
+
+
+    // axios.post('https://app.supervise.ly/public/api/v3/models.infer', files, {headers})
+    // .then(res=> {
+    //   console.log(res)
+    //   console.log(res.data)
+    // })
 
 
 
